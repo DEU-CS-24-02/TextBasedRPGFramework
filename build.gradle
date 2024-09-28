@@ -32,10 +32,13 @@ dependencies {
     implementation 'com.google.guava:guava:33.3.1-jre'
 
     implementation("com.mojang:datafixerupper:8.0.16")
+
+    implementation("org.jetbrains:annotations:25.0.0")
+    annotationProcessor("org.jetbrains:annotations:25.0.0")
 }
 
 application {
-    mainClass = 'net.biryeongtrain.Main'
+    mainClass = 'net.biryeongtrain.text_emulator.Main'
 }
 
 test {
