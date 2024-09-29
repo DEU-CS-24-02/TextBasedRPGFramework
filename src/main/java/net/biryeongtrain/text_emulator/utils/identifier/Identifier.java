@@ -1,6 +1,7 @@
 package net.biryeongtrain.text_emulator.utils.identifier;
 
 import com.google.gson.*;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.biryeongtrain.text_emulator.utils.JsonHelper;
 
@@ -9,6 +10,8 @@ import java.util.function.UnaryOperator;
 
 // Imported Code in Identifier class from yarn
 public class Identifier implements Comparable<Identifier>{
+    public static final Codec<Identifier> CODEC = Codec.STRING.comapFlatMap(Identifier::validate, Identifier::toString).stable();
+
     private final String namespace;
     private final String path;
     public static final char NAMESPACE_SEPARATOR = ':';
@@ -31,7 +34,7 @@ public class Identifier implements Comparable<Identifier>{
         return Identifier.splitOn(id, ':');
     }
 
-    public static Identifier ofVanilla(String path) {
+    public static Identifier ofDefault(String path) {
         return new Identifier(DEFAULT_NAMESPACE, Identifier.validatePath(DEFAULT_NAMESPACE, path));
     }
 
@@ -101,9 +104,9 @@ public class Identifier implements Comparable<Identifier>{
                 String string2 = id.substring(0, i);
                 return Identifier.ofValidated(string2, string);
             }
-            return Identifier.ofVanilla(string);
+            return Identifier.ofDefault(string);
         }
-        return Identifier.ofVanilla(id);
+        return Identifier.ofDefault(id);
     }
 
 
