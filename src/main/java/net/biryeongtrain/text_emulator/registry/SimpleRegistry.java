@@ -1,17 +1,20 @@
 package net.biryeongtrain.text_emulator.registry;
 
+import com.google.common.collect.Iterators;
+import it.unimi.dsi.fastutil.objects.*;
+import net.biryeongtrain.text_emulator.utils.Util;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class SimpleRegistry<T> implements Registry<T>{
     private boolean frozen = false;
     final RegistryKey<? extends Registry<T>> key;
     // we use IdentityMap because it uses == instead of equals. all registry value must be singleton
+    private final ObjectList<T> entries = new ObjectArrayList<>();
+    private final Reference2IntMap<T> entryToRawId = Util.make(new Reference2IntOpenHashMap<>(), map -> map.defaultReturnValue(-1));
     private final Map<RegistryKey<T>, T> idToEntry = new IdentityHashMap<>();
     private final Map<T, RegistryKey<T>> entryToId = new IdentityHashMap<>();
 
@@ -21,7 +24,7 @@ public class SimpleRegistry<T> implements Registry<T>{
 
     @Override
     public RegistryKey<? extends Registry<T>> getKey() {
-        return null;
+        return this.key;
     }
 
     @Override
@@ -83,4 +86,26 @@ public class SimpleRegistry<T> implements Registry<T>{
         this.entryToId.put(value, key);
         return value;
     }
+
+    @Override
+    public int getRawId(T var1) {
+        return this.entryToRawId.getInt(var1);
+    }
+
+    @Override
+    public @Nullable T get(int var1) {
+        return this.entries.get(var1);
+    }
+
+    @Override
+    public int size() {
+        return this.entries.size();
+    }
+
+    @NotNull
+    @Override
+    public Iterator<T> iterator() {
+        return this.entries.iterator();
+    }
+
 }
