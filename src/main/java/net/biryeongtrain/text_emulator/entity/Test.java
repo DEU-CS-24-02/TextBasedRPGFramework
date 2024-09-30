@@ -4,13 +4,14 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 
 public class Test implements Entity{
+
     @Override
-    public Codec<Test> getCodec() {
+    public Codec<Entity> getCodec() {
         return null;
     }
 
     @Override
-    public Test serialize(JsonElement element) {
+    public Entity serialize(JsonElement element) {
         return null;
     }
 }
