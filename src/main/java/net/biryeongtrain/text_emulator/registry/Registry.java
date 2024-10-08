@@ -18,4 +18,9 @@ public interface Registry<T> extends IndexedIterable<T> {
     void clear();
 
     T add(RegistryKey<T> key, T value);
+
+    static <R> R register(Registry<R> registry, Identifier id, R value) {
+        registry.add(RegistryKey.of(registry.getKey(), id), value);
+        return value;
+    }
 }
