@@ -8,14 +8,13 @@ import org.jetbrains.annotations.Nullable;
 
 public interface DataComponent<T> {
 
-    static Builder getBuilder() {
-        return new Builder();
+    static <T> Builder<T> getBuilder() {
+        return new Builder<>();
     }
 
     class Builder<T> {
         @Nullable
         private Codec<T> codec;
-        private boolean cache;
 
         public Builder() {}
 
@@ -24,14 +23,7 @@ public interface DataComponent<T> {
             return this;
         }
 
-        public Builder<T> cache() {
-            this.cache = true;
-            return this;
-        }
-
         public DataComponent<T> build() {
-
-            // TODO : cache logic
             return new SimpleDataComponent<>(this.codec);
         }
     }
