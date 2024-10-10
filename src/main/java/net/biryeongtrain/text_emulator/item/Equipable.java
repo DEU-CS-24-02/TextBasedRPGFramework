@@ -8,3 +8,4 @@ public interface Equipable {
     double getArmorPoint();
 
 }
+
