@@ -1,10 +1,19 @@
 package net.biryeongtrain.text_emulator.entity;
 
-public enum Slot {
+import net.biryeongtrain.text_emulator.utils.StringIdentifiable;
+
+public enum Slot implements StringIdentifiable {
     HEAD,
-    CHESTPLATE,
+    CHEST_PLATE,
     LEGGINGS,
     BOOTS,
     LEFT_HAND,
-    RIGHT_HAND
+    RIGHT_HAND;
+
+    public static final StringIdentifiable.EnumCodec<Slot> CODEC = StringIdentifiable.createCodec(Slot::values);
+
+    @Override
+    public String asString() {
+        return this.toString();
+    }
 }
