@@ -23,7 +23,7 @@ Scene은 시나리오의 요소 중 하나로, 텍스트가 표시되는 각 장
   "condition": {
     "comment_condition": "condition 은 if, never, always 로 나누어집니다.",
     "condition": "if",
-    "comment_operator": "below(>=), more(<=), lower(>), over(<), eqauals(==), has(only Item)",
+    "comment_operator": "below(>=), more(<=), lower(>), over(<), eqauals(==), has(item, player tag)",
     "operator": "more",
     "value": 10,
     "unit": "karma",
@@ -40,7 +40,7 @@ Scene은 시나리오의 요소 중 하나로, 텍스트가 표시되는 각 장
       "condition": {
         "comment_condition": "condition 은 if, never, always 로 나누어집니다.",
         "condition": "if",
-        "comment_operator": "below(>=), more(<=), lower(>), over(<), eqauals(==), has(only Item)",
+        "comment_operator": "below(>=), more(<=), lower(>), over(<), eqauals(==), has(Item, player Tag)",
         "operator": "more",
         "value": 10,
         "unit": "karma"
@@ -129,6 +129,9 @@ Scene은 시나리오의 요소 중 하나로, 텍스트가 표시되는 각 장
 
 TODO : conditions
 
+Scene은 시스템적으로 다시 보여주는 것이 아니라면(goto문) 더이상 나타나지 않습니다.
+
+
 
 <h2>엔티티 제작 방법</h2>
 
@@ -151,7 +154,10 @@ scenario/entity/
       "약해보인다."
    ],
    "comment_type":"적대적(hostile), 중립(netural), 우호(friendly) 가 있으며, 이에 따라 조우 시 가능한 키워드가 달라집니다. ",
-   "type":"hostile"
+   "type":"hostile",
+   "tags" : [
+    "my_scenario:slime_family",
+    "my_scenario:tameable"
 }
 ```
 
@@ -173,3 +179,31 @@ scenario/entity/
 }
 ```
 
+<h2>태그</h2>
+
+태그는 SceneTag, EntityTag로 나누어집니다.
+
+<h3>Scene Tag</h3>
+
+Selector에서 사용됩니다.
+scenario/tag/scene 에 존재해야합니다.
+```json
+{
+  "name" : "불한당",
+  "id" : "my_scenario:scoundrel"
+}
+```
+
+<h3>Entity Tag</h3>
+
+Condition 등에 사용됩니다. 
+
+```json
+{
+  "name" : "전쟁광"
+  "id" : "my_scenario:war_dog",
+  "comment_type" : "가능한 종류 : entity(플레이어를 포함한 모든 엔티티), non_player(플레이어를 제외한 모든 엔티티), player"
+  "type" : "player",
+  "description" : "당신이 가는 길에는 전쟁이 있습니다. 오늘도 당신은 텅빈 눈과 함께 전장으로 달려갑니다. 당신의 여정 너머에는 무엇이 있을까요?"
+}
+```
