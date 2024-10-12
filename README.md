@@ -14,80 +14,120 @@ Scene은 시나리오의 요소 중 하나로, 텍스트가 표시되는 각 장
 
 ```json
 {
-   "VERSION_DO_NOT_TOUCH_THIS":1,
-   "comment_name":"name 키는 사용자에게 보여줄 시나리오의 이름을 결정합니다.",
-   "name":"행상인",
-   "comment_id":"id 키는 시스템적으로 인식되는 문자입니다. scenarioId:scene_name 으로 구성하는 것을 추천드리며, a-z,0-9,-_ 만 사용 가능합니다.",
-   "id":"my_scenario:shopkeeper_meet",
-   "comment_lore":"lore는 리스트로 정의되어 있습니다. lore의 인덱스는 줄 바꿈을 의미합니다.",
-   "lore":[
-      "험난한 여정이 계속되는 가운데, 당신은 외진 길에서 상인을 만났습니다.",
-      "",
-      "그는 당신을 보고, 싸게 해줄태니 아이템을 조금 보고 가라고 합니다.",
-      "",
-      "당신은 어느정도 흥미가 당겨, 물품을 보기 시작했습니다."
-   ],
-   "comment_decision":"decision은 선택지로 구성되어있습니다. 선택지에는 선택 가능한 조건을 설정 할 수 있습니다.",
-   "decision":[
-      {
-         "comment_condition":"if, none 이 존재합니다. if는 unit, operator, value가 존재해야합니다.",
-         "condition":"if",
-         "comment_unit":"gold, health, armor, damage",
-         "unit":"gold",
-         "comment_operator":"below(>=), more(<=), lower(>), over(<), eqauals(==), has(only Item)",
-         "operator":"more",
-         "value":1500,
-         "then":{
-            "comment_action":"action은 list로 구성되어있으며, 인덱스 순서대로 실행됩니다.",
-            "action":[
-               {
-                  "comment_type":"type 은 give, take, goto, print, disable_decision 으로 구성되어있습니다. give, take는 unit과 value가 구성되어야하며, goto는 이동할 신의 이름이 존재해야합니다. print는 text 란이 존재해야합니다. 문자열이여야합니다.",
-                  "comment_type_2":"decision 은 decisions 값으로 리스트 값을 받으며, 정수형이여야합니다. 엔티티와 조우하려면 encounter, value : entityId 로 하면됩니다.",
-                  "type":"take",
-                  "unit":"gold",
-                  "value":1500
-               },
-               {
-                  "type":"give",
-                  "unit":"item",
-                  "item":"my_scenario:iron_sword",
-                  "value":1
-               },
-               {
-                  "type":"print",
-                  "text":[
-                     "당신은 옳은 선택을 했다고 생각하며, 철 검을 구매합니다."
-                  ]
-               },
-               {
-                  "type":"disable_decision",
-                  "decisions":[
-                     0
-                  ]
-               }
-            ]
-         }
+  "VERSION_DO_NOT_TOUCH_THIS": 1,
+  "comment_name": "name 키는 사용자에게 보여줄 시나리오의 이름을 결정합니다.",
+  "name": "행상인",
+  "comment_id": "id 키는 시스템적으로 인식되는 문자입니다. scenarioId:scene_name 으로 구성하는 것을 추천드리며, a-z,0-9,-_ 만 사용 가능합니다.",
+  "id": "my_scenario:shopkeeper_meet",
+  "comment_condition": "condition은 해당 scene 이 등장하기 위한 조건을 의미합니다.",
+  "condition": {
+    "comment_condition": "condition 은 if, never, always 로 나누어집니다.",
+    "condition": "if",
+    "comment_operator": "below(>=), more(<=), lower(>), over(<), eqauals(==), has(only Item)",
+    "operator": "more",
+    "value": 10,
+    "unit": "karma",
+    "comment_weight": "weight은 https://dev.to/jacktt/understanding-the-weighted-random-algorithm-581p 을 이용하여 실행됩니다. -1 은 조건을 만족하면 무조건 실행됩니다.",
+    "weight": 1000
+  },
+  "comment_lore": "lore는 리스트로 정의되어 있습니다. lore의 인덱스는 줄 바꿈을 의미합니다.",
+  "lore": [
+    {
+      "text": "험난한 여정이 계속되는 가운데, 당신은 외진 길에서 상인을 만났습니다."
+    },
+    "",
+    {
+      "condition": {
+        "comment_condition": "condition 은 if, never, always 로 나누어집니다.",
+        "condition": "if",
+        "comment_operator": "below(>=), more(<=), lower(>), over(<), eqauals(==), has(only Item)",
+        "operator": "more",
+        "value": 10,
+        "unit": "karma"
       },
-      {
-         "then":{
-            "action":[
-               {
-                  "type":"print",
-                  "text":[
-                     "돈이 없기때문인지, 마음에 안들어서인지는 모르겠으나, 당신은 행상인을 뒤로두고 발길을 재촉합니다."
-                  ]
-               },
-               {
-                  "type":"goto",
-                  "comment_scene":"정해진 씬이 없다면 random으로 작성하세요.",
-                  "scene":"random"
-               }
+      "text": "그는 당신을 보고, 싸게 해줄태니 아이템을 조금 보고 가라고 합니다."
+    },
+    {
+      "condition": {
+        "comment_condition": "condition 은 if, never, always 로 나누어집니다.",
+        "condition": "if",
+        "comment_operator": "below(>=), more(<=), lower(>), over(<), eqauals(==), has(only Item)",
+        "operator": "below",
+        "value": -10,
+        "unit": "karma"
+      },
+      "text": "그는 당신을 보더니 기겁하고는 눈치를 보며, 아이템을 조금 보고 갈 생각이 있냐 말합니다."
+    },
+    {
+      "text": ""
+    },
+    {
+      "text": "당신은 어느정도 흥미가 당겨, 물품을 보기 시작했습니다."
+    }
+  ],
+  "comment_decision": "decision은 선택지로 구성되어있습니다. 선택지에는 선택 가능한 조건을 설정 할 수 있습니다.",
+  "decision": [
+    {
+      "comment_condition": "if, none 이 존재합니다. if는 unit, operator, value가 존재해야합니다.",
+      "condition": "if",
+      "comment_unit": "gold, health, armor, damage",
+      "unit": "gold",
+      "comment_operator": "below(>=), more(<=), lower(>), over(<), eqauals(==), has(only Item)",
+      "operator": "more",
+      "value": 1500,
+      "then": {
+        "comment_action": "action은 list로 구성되어있으며, 인덱스 순서대로 실행됩니다.",
+        "action": [
+          {
+            "comment_type": "type 은 give, take, goto, print, disable_decision 으로 구성되어있습니다. give, take는 unit과 value가 구성되어야하며, goto는 이동할 신의 이름이 존재해야합니다. print는 text 란이 존재해야합니다. 문자열이여야합니다.",
+            "comment_type_2": "decision 은 decisions 값으로 리스트 값을 받으며, 정수형이여야합니다. 엔티티와 조우하려면 encounter, value : entityId 로 하면됩니다.",
+            "type": "take",
+            "unit": "gold",
+            "value": 1500
+          },
+          {
+            "type": "give",
+            "unit": "item",
+            "item": "my_scenario:iron_sword",
+            "value": 1
+          },
+          {
+            "type": "print",
+            "text": [
+              "당신은 옳은 선택을 했다고 생각하며, 철 검을 구매합니다."
             ]
-         }
+          },
+          {
+            "type": "disable_decision",
+            "decisions": [
+              0
+            ]
+          }
+        ]
       }
-   ]
+    },
+    {
+      "then": {
+        "action": [
+          {
+            "type": "print",
+            "text": [
+              "돈이 없기때문인지, 마음에 안들어서인지는 모르겠으나, 당신은 행상인을 뒤로두고 발길을 재촉합니다."
+            ]
+          },
+          {
+            "type": "goto",
+            "comment_scene": "정해진 씬이 없다면 random으로 작성하세요.",
+            "scene": "random"
+          }
+        ]
+      }
+    }
+  ]
 }
 ```
+
+TODO : conditions
 
 
 <h2>엔티티 제작 방법</h2>
