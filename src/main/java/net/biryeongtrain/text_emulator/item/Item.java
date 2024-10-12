@@ -1,4 +1,5 @@
 package net.biryeongtrain.text_emulator.item;
+import net.biryeongtrain.text_emulator.entity.Slot; // 올바른 Slot 임포트
 
 import com.mojang.serialization.Codec;
 import net.biryeongtrain.text_emulator.io.Serializable;
