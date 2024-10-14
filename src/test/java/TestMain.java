@@ -1,4 +1,8 @@
+import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.biryeongtrain.text_emulator.item.component.ComponentMap;
 import net.biryeongtrain.text_emulator.item.component.ComponentMapImpl;
 import net.biryeongtrain.text_emulator.item.component.type.Consumable;
@@ -8,6 +12,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 import static net.biryeongtrain.text_emulator.Main.LOGGER;
 
@@ -30,6 +36,8 @@ public class TestMain {
     public void testMain() {
         LOGGER.info("Start Identifier Test");
         Identifier correct = Identifier.of("you-can-do-like-this", "or_this_1_2");
+        Identifier.ofDefault("test");
+        // namespace : path
         Identifier incorrect = Identifier.of("you-can-do-like-this", "or_this_1_2");
         if (correct.equals(incorrect)) {
             LOGGER.info("Correct, {} {}", correct, incorrect);
@@ -148,6 +156,52 @@ public class TestMain {
             Assertions.fail();
         }
 
+        int maxUsage = components.get(ItemComponents.MAX_STACK_SIZE);
+
+        LOGGER.info("Max Usage: {}", maxUsage);
+        components.set(ItemComponents.MAX_STACK_SIZE, 100);
+
+        LOGGER.info("Max Usage: {}", components.get(ItemComponents.MAX_STACK_SIZE));
         LOGGER.info("ComponentImpl I/O Test Passed");
+
+        // 아이템 Item.class : 종류 삽, 검 이런 개념
+        // ItemStack.class : 삽, 검을 실체화 한 것 - 검의 내구도가 닳았다 하면 ItemStack의 내구도 데이터가 변경되는거
+    }
+
+    @Test
+    @DisplayName("CODEC Test")
+    public void codecTest() {
+        TestClass testClass = new TestClass(10);
+
+        var encoded = TestClass.CODEC.encodeStart(JsonOps.INSTANCE, testClass);
+        if (encoded.isSuccess()) {
+            JsonElement jsonElement = encoded.result().get();
+            System.out.println(jsonElement);
+
+            var decoded = TestClass.CODEC.decode(JsonOps.INSTANCE, jsonElement);
+
+            if (decoded.isSuccess()) {
+                Optional<Pair<TestClass, JsonElement>> result = decoded.result();
+                TestClass testClass2 = result.get().getFirst();
+                System.out.printf(testClass2.toString());
+            }
+        }
+    }
+
+    public static class TestClass {
+        public static Codec<TestClass> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("asdf").forGetter(TestClass::getI)
+        ).apply(instance, (i) -> new TestClass(i)));
+
+
+        private final int i;
+
+        public TestClass(int i) {
+            this.i = i;
+        }
+
+        public int getI() {
+            return i;
+        }
     }
 }

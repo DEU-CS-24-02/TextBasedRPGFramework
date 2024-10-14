@@ -16,7 +16,7 @@ public class Identifier implements Comparable<Identifier>{
     private final String namespace;
     private final String path;
     public static final char NAMESPACE_SEPARATOR = ':';
-    public static final String DEFAULT_NAMESPACE = "emulator";
+    public static final String DEFAULT_NAMESPACE = "framework";
 
     private Identifier(String namespace, String path) {
         this.namespace = namespace;
