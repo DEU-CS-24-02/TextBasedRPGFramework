@@ -1,6 +1,5 @@
 package net.biryeongtrain.text_emulator.registry;
 
-import com.google.common.collect.Iterators;
 import it.unimi.dsi.fastutil.objects.*;
 import net.biryeongtrain.text_emulator.utils.Util;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
