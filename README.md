@@ -131,36 +131,33 @@ TODO : conditions
 
 Scene은 시스템적으로 다시 보여주는 것이 아니라면(goto문) 더이상 나타나지 않습니다.
 
-
-
 <h2>엔티티 제작 방법</h2>
 
 엔티티는 아이템 다음으로 로드됩니다. 엔티티 파일은 무조건
 scenario/entity/
 에 존재해야합니다.
 
-
 ```json
 {
-   "comment_name":"사용자에게 보여줄 이름을 결정하는 부분입니다.",
-   "name":"슬라임",
-   "comment_id":"시스템적으로 엔티티를 식별할 아이디입니다. a-z,0-9,-_ 만 가능합니다.",
-   "health":5,
-   "damage":1,
-   "defense":0,
-   "description":[
-      "평범한 슬라임이다.",
-      "",
-      "약해보인다."
-   ],
-   "comment_type":"적대적(hostile), 중립(netural), 우호(friendly) 가 있으며, 이에 따라 조우 시 가능한 키워드가 달라집니다. ",
-   "type":"hostile",
-   "tags" : [
+  "comment_name": "사용자에게 보여줄 이름을 결정하는 부분입니다.",
+  "name": "슬라임",
+  "comment_id": "시스템적으로 엔티티를 식별할 아이디입니다. a-z,0-9,-_ 만 가능합니다.",
+  "health": 5,
+  "damage": 1,
+  "defense": 0,
+  "description": [
+    "평범한 슬라임이다.",
+    "",
+    "약해보인다."
+  ],
+  "comment_type": "적대적(hostile), 중립(netural), 우호(friendly) 가 있으며, 이에 따라 조우 시 가능한 키워드가 달라집니다. ",
+  "type": "hostile",
+  "tags": [
     "my_scenario:slime_family",
     "my_scenario:tameable"
+  ]
 }
 ```
-
 
 <h2>아이템</h2>
 
@@ -168,14 +165,20 @@ scenario/entity/
 
 ```json
 {
-   "name":"조잡한 검",
-   "id":"my_scenario:simple_sword",
-   "damage":2,
-   "defense":0,
-   "comment_slot":"slot은 착용가능 부위를 뜻합니다. head, chestplate, leggings, boots, one_handed, two_handed 로 구분됩니다. one_handed 는 두개를 낄 수 있고, two_handed는 한개만 낄수있습니다.",
-   "slot":"one_handed",
-   "comment_durability":"durability 는 내구도를 의미합니다. one_handed, two_handed는 공격 시, head,chestplate,leggings,boots 는 피격 시 내구도가 줄어들며, 공란으로 두면 내구도는 무제한으로 취급됩니다.",
-   "durability":10
+  "name": "조잡한 검",
+  "id": "my_scenario:simple_sword",
+  "damage": 2,
+  "defense": 0,
+  "comment_slot": "slot은 착용가능 부위를 뜻합니다. head, chestplate, leggings, boots, one_handed, two_handed 로 구분됩니다.",
+  "comment_slot_2" : " one_handed 는 두개를 낄 수 있고, two_handed는 한개만 낄수있습니다.",
+  "comment_durability": "durability 는 내구도를 의미합니다. one_handed, two_handed는 공격 시, ",
+  "comment_durability_2" : "head,chestplate,leggings,boots 는 피격 시 내구도가 줄어들며, 공란으로 두면 내구도는 무제한으로 취급됩니다.",
+  "components" : {
+    "damage" : 2,
+    "defense" : 0,
+    "equipable" : ["one_handed"],
+    "durability" : 10
+  }
 }
 ```
 
@@ -187,23 +190,24 @@ scenario/entity/
 
 Selector에서 사용됩니다.
 scenario/tag/scene 에 존재해야합니다.
+
 ```json
 {
-  "name" : "불한당",
-  "id" : "my_scenario:scoundrel"
+  "name": "불한당",
+  "id": "my_scenario:scoundrel"
 }
 ```
 
 <h3>Entity Tag</h3>
 
-Condition 등에 사용됩니다. 
+Condition 등에 사용됩니다.
 
 ```json
 {
-  "name" : "전쟁광"
-  "id" : "my_scenario:war_dog",
-  "comment_type" : "가능한 종류 : entity(플레이어를 포함한 모든 엔티티), non_player(플레이어를 제외한 모든 엔티티), player"
-  "type" : "player",
-  "description" : "당신이 가는 길에는 전쟁이 있습니다. 오늘도 당신은 텅빈 눈과 함께 전장으로 달려갑니다. 당신의 여정 너머에는 무엇이 있을까요?"
+  "name": "전쟁광",
+  "id": "my_scenario:war_dog",
+  "comment_type": "가능한 종류 : entity(플레이어를 포함한 모든 엔티티), non_player(플레이어를 제외한 모든 엔티티), player",
+  "type": "player",
+  "description": "당신이 가는 길에는 전쟁이 있습니다. 오늘도 당신은 텅빈 눈과 함께 전장으로 달려갑니다. 당신의 여정 너머에는 무엇이 있을까요?"
 }
 ```
