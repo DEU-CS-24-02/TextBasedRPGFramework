@@ -31,7 +31,7 @@ public class Codecs {
     public static <E> Codec<E> rawIdChecked(ToIntFunction<E> elementToRawId, IntFunction<E> rawIdToElement, int errorRawId) {
         return Codec.INT
                 .flatXmap(
-                        rawId -> (DataResult) Optional.ofNullable(rawIdToElement.apply(rawId))
+                        rawId -> Optional.ofNullable(rawIdToElement.apply(rawId))
                                 .map(DataResult::success)
                                 .orElseGet(() -> DataResult.error(() -> "Unknown element id: " + rawId)),
                         element -> {

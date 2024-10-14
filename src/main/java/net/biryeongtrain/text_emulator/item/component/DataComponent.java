@@ -11,7 +11,7 @@ import java.util.Map;
 
 public interface DataComponent<T> {
     Codec<DataComponent<?>> CODEC = Codec.lazyInitialized(Registries.ITEM_COMPONENTS::getCodec);
-    Codec<DataComponent<?>> PERSISTENT_CODEC = CODEC.validate(componentType -> componentType.shouldSkipSerialization() ? DataResult.error(() -> "Encountered transient component " + String.valueOf(Registries.ITEM_COMPONENTS.getId(componentType))) : DataResult.success(componentType));
+    Codec<DataComponent<?>> PERSISTENT_CODEC = CODEC.validate(componentType -> componentType.shouldSkipSerialization() ? DataResult.error(() -> "Encountered transient component " + Registries.ITEM_COMPONENTS.getId(componentType)) : DataResult.success(componentType));
 
     Codec<Map<DataComponent<?>, Object>> TYPE_TO_VALUE_MAP_CODEC = Codec.dispatchedMap(PERSISTENT_CODEC, DataComponent::getCodecOrThrow);
 
@@ -42,7 +42,7 @@ public interface DataComponent<T> {
     default Codec<T> getCodecOrThrow() {
         Codec<T> codec = this.getCodec();
         if (codec == null) {
-            throw new IllegalStateException(String.valueOf(this) + " is not a persistent component");
+            throw new IllegalStateException(this + " is not a persistent component");
         }
         return codec;
     }

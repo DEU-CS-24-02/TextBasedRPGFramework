@@ -19,16 +19,16 @@ public record Component<T> (DataComponent<T> type, T value) {
         components.set(this.type, this.value);
     }
 
-    public <T> DataResult<T> encode(DynamicOps<T> ops) {
-        Codec<T> codec = (Codec<T>) this.type.getCodec();
+    public <R> DataResult<R> encode(DynamicOps<R> ops) {
+        Codec<R> codec = (Codec<R>) this.type.getCodec();
         if (codec == null) {
-            return DataResult.error(() -> "Component of type " + String.valueOf(this.type) + " is not encodable");
+            return DataResult.error(() -> "Component of type " + this.type + " is not encodable");
         }
-        return codec.encodeStart(ops, (T) this.value);
+        return codec.encodeStart(ops, (R) this.value);
     }
 
     @Override
     public String toString() {
-        return String.valueOf(this.type) + "=>" + String.valueOf(this.value);
+        return this.type + "=>" + this.value;
     }
 }

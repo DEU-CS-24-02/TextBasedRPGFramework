@@ -16,7 +16,7 @@ public class ComponentMapImpl implements ComponentMap {
     private boolean copyOnWrite;
 
     public ComponentMapImpl(ComponentMap baseComponents) {
-        this.baseComponents = baseComponents;
+        this(baseComponents, Reference2ObjectMaps.emptyMap(), true);
     }
 
     public ComponentMapImpl(ComponentMap baseComponents, Reference2ObjectMap<DataComponent<?>, Optional<?>> changedComponents, boolean copyOnWrite) {
@@ -26,18 +26,23 @@ public class ComponentMapImpl implements ComponentMap {
     }
 
     public static ComponentMapImpl create(ComponentMap baseComponents, ComponentChanges changes) {
-        return new ComponentMapImpl(baseComponents);
+        if (ComponentMapImpl.shouldReuseChangesMap(baseComponents, changes.changedComponents)) {
+            return new ComponentMapImpl(baseComponents, changes.changedComponents, true);
+        }
+        ComponentMapImpl componentMapImpl = new ComponentMapImpl(baseComponents);
+        componentMapImpl.setChanges(changes);
+        return componentMapImpl;
     }
 
     private static boolean shouldReuseChangesMap(ComponentMap baseComponents, Reference2ObjectMap<DataComponent<?>, Optional<?>> changedComponents) {
-        for (Map.Entry entry : Reference2ObjectMaps.fastIterable(changedComponents)) {
-            Object object = baseComponents.get((DataComponent)entry.getKey());
-            Optional optional = (Optional) entry.getValue();
+        for (Map.Entry<DataComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(changedComponents)) {
+            Object object = baseComponents.get(entry.getKey());
+            Optional<?> optional = entry.getValue();
             if (optional.isPresent() && !optional.get().equals(object)) {
                 return false;
             }
 
-            if (!optional.isEmpty() || object != null) {
+            if (object != null) {
                 continue;
             }
             return false;

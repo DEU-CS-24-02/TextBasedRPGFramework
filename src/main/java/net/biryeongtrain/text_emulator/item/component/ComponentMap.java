@@ -72,7 +72,7 @@ public interface ComponentMap extends Iterable<Component<?>> {
     @Nullable
     default <T> Component<T> copy(DataComponent<T> type) {
         T object = this.get(type);
-        return object != null ? new Component<T>(type, object) : null;
+        return object != null ? new Component<>(type, object) : null;
     }
 
     @NotNull
@@ -162,6 +162,7 @@ public interface ComponentMap extends Iterable<Component<?>> {
             return this.map.keySet();
         }
 
+        @NotNull
         @Override
         public Iterator<Component<?>> iterator() {
             return Iterators.transform(Reference2ObjectMaps.fastIterator(this.map), Component::of);
