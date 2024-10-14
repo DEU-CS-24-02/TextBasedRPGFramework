@@ -1,4 +1,4 @@
-package net.biryeongtrain.text_emulator.item.component;
+package net.biryeongtrain.text_emulator.item.component.type;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

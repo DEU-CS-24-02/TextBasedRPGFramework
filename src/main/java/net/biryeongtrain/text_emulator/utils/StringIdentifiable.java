@@ -28,7 +28,7 @@ public interface StringIdentifiable {
     static <E extends Enum<E> & StringIdentifiable> StringIdentifiable.EnumCodec<E> createCodec(
             Supplier<E[]> enumValues, Function<String, String> valueNameTransformer
     ) {
-        E[] enums = (E[])enumValues.get();
+        E[] enums = enumValues.get();
         Function<String, E> function = createMapper(enums, valueNameTransformer);
         return new StringIdentifiable.EnumCodec<>(enums, function);
     }
