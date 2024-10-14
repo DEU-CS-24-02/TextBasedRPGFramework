@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.biryeongtrain.text_emulator.utils.JsonHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.function.UnaryOperator;
@@ -94,6 +95,28 @@ public class Identifier implements Comparable<Identifier>{
 
     public Identifier withPath(UnaryOperator<String> pathFunction) {
         return this.withPath((String)pathFunction.apply(this.path));
+    }
+
+    @Nullable
+    public static Identifier tryParse(String id) {
+        return Identifier.trySplitOn(id, ':');
+    }
+
+    @Nullable
+    public static Identifier trySplitOn(String id, char delimiter) {
+        int i = id.indexOf(delimiter);
+        if (i >= 0) {
+            String string = id.substring(i + 1);
+            if (!Identifier.isPathValid(string)) {
+                return null;
+            }
+            if (i != 0) {
+                String string2 = id.substring(0, i);
+                return Identifier.isNamespaceValid(string2) ? new Identifier(string2, string) : null;
+            }
+            return new Identifier(DEFAULT_NAMESPACE, string);
+        }
+        return Identifier.isPathValid(id) ? new Identifier(DEFAULT_NAMESPACE, id) : null;
     }
 
     public static Identifier splitOn(String id, char delimiter) {

@@ -1,26 +1,25 @@
 package net.biryeongtrain.text_emulator.item;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
 import net.biryeongtrain.text_emulator.io.Serializable;
-import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 
-public interface Item<T extends Item<T>> extends Serializable<T> {
-    /**
-     * Returns Max Usage of Item.
-     * if this -1, it means it not consumable.
-     * @return Max Usage of Item.
-     */
-    default int getUsage() {
-        return -1;
+public class Item implements Serializable<Item> {
+
+    @Override
+    public Codec<Item> getCodec() {
+        return null;
     }
 
-    /**
-     * returns the damage that increase when the item is held.
-     *
-     * @return the damage item
-     */
-    default float getDamage() {
-        return 0.0F;
+    @Override
+    public Item serialize(JsonElement element) {
+        return null;
     }
-    
-    Identifier getId();
+
+    public class Settings {
+
+        public Settings setMaxCount(int maxCount) {
+            return this;
+        }
+    }
 }

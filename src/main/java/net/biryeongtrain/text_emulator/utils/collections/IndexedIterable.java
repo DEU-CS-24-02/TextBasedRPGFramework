@@ -1,4 +1,4 @@
-package net.biryeongtrain.text_emulator.utils;
+package net.biryeongtrain.text_emulator.utils.collections;
 
 import org.jetbrains.annotations.Nullable;
 
