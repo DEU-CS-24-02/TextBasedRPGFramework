@@ -19,7 +19,6 @@ public class ItemComponents {
         LEGENDARY
     }
 
-
     // TODO : add DESCRIPTION, DAMAGE, ARMOR, RARITY, DURABILITY
     public static DataComponent<Consumable> CONSUMABLE = register(Identifier.of("consumable"), (builder) -> builder.codec(Consumable.CODEC));
     public static DataComponent<Equipable> EQUIPABLE = register(Identifier.of("equipable"), (builder) -> builder.codec(Equipable.CODEC));
