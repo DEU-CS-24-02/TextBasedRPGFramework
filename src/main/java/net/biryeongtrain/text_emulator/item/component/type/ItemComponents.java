@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class ItemComponents {
-    public enum Rarity{
+    public enum Rarity {
         COMMON,
         ADVANCED,
         RARE,
