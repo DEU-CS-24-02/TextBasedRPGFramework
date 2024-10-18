@@ -31,9 +31,6 @@ public class ItemComponents {
 
     public static ComponentMap DEFAULT_ITEM_COMPONENTS = ComponentMap.builder()
             .add(MAX_STACK_SIZE, 100)
-            .add(DESCRIPTION,List.of())
-            .add(DAMAGE,1.0f)
-            .add(ARMOR,1.0f)
             .add(RARITY,Rarity.COMMON)
             .add(DURABILITY, -1)
             .build();
