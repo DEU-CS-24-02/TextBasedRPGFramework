@@ -7,7 +7,7 @@ public class Inventory {
     public final DefaultedList<ItemStack> entries;
 
     public Inventory(int size) {
-        this.entries = DefaultedList.ofSize(size, new ItemStack());
+        this.entries = DefaultedList.ofSize(size, ItemStack.EMPTY);
     }
 
     public void get() {
