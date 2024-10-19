@@ -6,6 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ToIntFunction;
 
@@ -26,6 +27,17 @@ public class Codecs {
                 return uncompressedCodec + " orCompressed " + compressedCodec;
             }
         };
+    }
+
+    private static Codec<Integer> rangedInt(int min, int max, Function<Integer, String> messageFactory) {
+        return Codec.INT
+                .validate(
+                        value -> value.compareTo(min) >= 0 && value.compareTo(max) <= 0 ? DataResult.success(value) : DataResult.error(() -> messageFactory.apply(value))
+                );
+    }
+
+    public static Codec<Integer> rangedInt(int min, int max) {
+        return rangedInt(min, max, value -> "Value must be within range [" + min + ";" + max + "]: " + value);
     }
 
     public static <E> Codec<E> rawIdChecked(ToIntFunction<E> elementToRawId, IntFunction<E> rawIdToElement, int errorRawId) {
