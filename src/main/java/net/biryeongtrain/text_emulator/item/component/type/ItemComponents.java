@@ -10,6 +10,7 @@ import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
+@SuppressWarnings({"unchecked", "unused"})
 public class ItemComponents {
     // TODO : add DESCRIPTION, DAMAGE, ARMOR, RARITY, DURABILITY
     public static DataComponent<Consumable> CONSUMABLE = register(Identifier.of("consumable"), (builder) -> builder.codec(Consumable.CODEC));

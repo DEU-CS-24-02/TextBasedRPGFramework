@@ -1,8 +1,8 @@
 package net.biryeongtrain.text_emulator.item.component.type;
 
-import net.biryeongtrain.text_emulator.entity.Slot;
 import net.biryeongtrain.text_emulator.utils.StringIdentifiable;
 
+@SuppressWarnings("deprecation")
 public enum Rarity implements StringIdentifiable {
     COMMON,
     ADVANCED,
