@@ -3,10 +3,14 @@ package net.biryeongtrain.text_emulator.item;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.entity.Slot;
 import net.biryeongtrain.text_emulator.io.Serializable;
 import net.biryeongtrain.text_emulator.item.component.ComponentChanges;
 import net.biryeongtrain.text_emulator.item.component.ComponentMap;
 import net.biryeongtrain.text_emulator.item.component.ComponentMapImpl;
+import net.biryeongtrain.text_emulator.item.component.DataComponent;
+import net.biryeongtrain.text_emulator.item.component.type.ItemComponents;
+import net.biryeongtrain.text_emulator.item.component.type.SlotInstance;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.utils.Codecs;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +27,7 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
 
     public static final ItemStack EMPTY = new ItemStack((Void) null);
 
-    private final Item base;
+    private Item base;
     final ComponentMapImpl components;
     private int count;
 
@@ -76,9 +80,61 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
         return this.base == item;
     }
 
+    public <T> void set(DataComponent<T> type, T value) {
+        this.components.set(type, value);
+    }
 
     @Override
     public ComponentMap getComponents() {
         return (!this.isEmpty() ? this.components : ComponentMap.EMPTY);
     }
+
+    public void shrink() {
+        this.count--;
+        if (this.count <= 0) {
+            this.base = Items.AIR;
+        }
+    }
+
+    public void setCount(int i) {
+        this.count = Math.min(this.getMaxCount(), i);
+
+        if (this.count <= 0) {
+            this.base = Items.AIR;
+        }
+    }
+
+    public int getMaxCount() {
+        return this.contains(ItemComponents.MAX_STACK_SIZE) ? this.get(ItemComponents.MAX_STACK_SIZE) : ItemComponents.DEFAULT_ITEM_COMPONENTS.get(ItemComponents.MAX_STACK_SIZE);
+    }
+
+    public boolean isSameStack(ItemStack other) {
+        boolean bl1 = other.components.equals(this.components);
+        boolean bl2 = other.base == this.base; // must == check. all item class must be Singleton.
+        boolean bl3 = other.count == this.count;
+        return bl1 && bl2 && bl3;
+    }
+
+    public boolean isEquipable() {
+        return this.contains(ItemComponents.SLOT_INSTANCE);
+    }
+
+    public float getEquipmentValue(Slot slot) {
+        var instance = this.get(ItemComponents.SLOT_INSTANCE);
+        if (instance == null) {
+            return 0.0F;
+        }
+
+        var optional = instance.stream()
+                .filter(slotInstance -> slotInstance.slot() == slot)
+                .findFirst();
+
+        return optional.map(SlotInstance::value).orElse(0.0F);
+
+    }
+
+    public void equip(Slot slot) {
+        // TODO : EQUIP LOGIC
+    }
+
 }
