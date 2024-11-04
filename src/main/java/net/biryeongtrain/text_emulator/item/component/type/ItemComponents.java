@@ -14,7 +14,7 @@ import java.util.function.UnaryOperator;
 public class ItemComponents {
     // TODO : add DESCRIPTION, DAMAGE, ARMOR, RARITY, DURABILITY
     public static DataComponent<Consumable> CONSUMABLE = register(Identifier.of("consumable"), (builder) -> builder.codec(Consumable.CODEC));
-    public static DataComponent<Equipable> EQUIPABLE = register(Identifier.of("equipable"), (builder) -> builder.codec(Equipable.CODEC));
+    public static DataComponent<List<SlotInstance>> SLOT_INSTANCE = register(Identifier.of("slot_instance"), (builder) -> builder.codec(SlotInstance.CODEC.listOf()));
     public static DataComponent<Integer> MAX_STACK_SIZE = register(Identifier.of("max_stack_size"), (builder) -> builder.codec(Codec.INT));
     public static DataComponent<List<String>> DESCRIPTION = register(Identifier.of("description"), (builder)->builder.codec(Codec.list(Codec.STRING)));
     public static DataComponent<Float> DAMAGE = register(Identifier.of("damage"), (builder) -> builder.codec(Codec.FLOAT));
