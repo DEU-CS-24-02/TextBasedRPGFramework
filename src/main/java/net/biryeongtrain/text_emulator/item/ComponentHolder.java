@@ -1,7 +1,7 @@
 package net.biryeongtrain.text_emulator.item;
 
 import net.biryeongtrain.text_emulator.item.component.ComponentMap;
-import net.biryeongtrain.text_emulator.item.component.DataComponent;
+import net.biryeongtrain.text_emulator.item.component.ItemComponent;
 import org.jetbrains.annotations.Nullable;
 
 public interface ComponentHolder {
@@ -14,7 +14,7 @@ public interface ComponentHolder {
      * <p>반환된 값은 불변형 이여야 합니다.
      */
     @Nullable
-    default <T> T get(DataComponent<? extends T> componentType) {
+    default <T> T get(ItemComponent<? extends T> componentType) {
         return this.getComponents().get(componentType);
     }
 
@@ -26,7 +26,7 @@ public interface ComponentHolder {
      * <p>메소드에서 주어진 {@code fallback}은 컴포넌트에 영향을 끼치지 않습니다.
      * 반환된 값은 불변형 이여야 합니다.
      */
-   default <T> T getOrDefault(DataComponent<? extends T> componentType, T fallback) {
+   default <T> T getOrDefault(ItemComponent<? extends T> componentType, T fallback) {
         return this.getComponents().getOrDefault(componentType, fallback);
    }
 
@@ -35,7 +35,7 @@ public interface ComponentHolder {
      *
      * @return {@code true} 를 반환하면 해당 컴포넌트가 존재합니다.
      */
-   default boolean contains(DataComponent<?> type) {
+   default boolean contains(ItemComponent<?> type) {
          return this.getComponents().contains(type);
    }
 }
