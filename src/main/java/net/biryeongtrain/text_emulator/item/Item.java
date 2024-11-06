@@ -2,12 +2,9 @@ package net.biryeongtrain.text_emulator.item;
 
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.Codec;
-import net.biryeongtrain.text_emulator.io.Serializable;
 import net.biryeongtrain.text_emulator.item.component.ComponentMap;
-import net.biryeongtrain.text_emulator.item.component.DataComponent;
-import net.biryeongtrain.text_emulator.item.component.type.ItemComponents;
+import net.biryeongtrain.text_emulator.item.component.ItemComponent;
+import net.biryeongtrain.text_emulator.item.component.ItemComponents;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -49,7 +46,7 @@ public class Item {
         @Nullable
         private ComponentMap.Builder components;
 
-        public <T> Settings component(DataComponent<T> type, T value) {
+        public <T> Settings component(ItemComponent<T> type, T value) {
             if (this.components == null) {
                 this.components = ComponentMap.builder().addAll(ItemComponents.DEFAULT_ITEM_COMPONENTS);
             }

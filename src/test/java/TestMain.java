@@ -9,7 +9,7 @@ import net.biryeongtrain.text_emulator.item.Items;
 import net.biryeongtrain.text_emulator.item.component.ComponentMap;
 import net.biryeongtrain.text_emulator.item.component.ComponentMapImpl;
 import net.biryeongtrain.text_emulator.item.component.type.Consumable;
-import net.biryeongtrain.text_emulator.item.component.type.ItemComponents;
+import net.biryeongtrain.text_emulator.item.component.ItemComponents;
 import net.biryeongtrain.text_emulator.item.component.type.Rarity;
 import net.biryeongtrain.text_emulator.item.component.type.SlotInstance;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;

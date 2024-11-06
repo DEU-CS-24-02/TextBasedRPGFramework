@@ -9,11 +9,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 
-public interface DataComponent<T> {
-    Codec<DataComponent<?>> CODEC = Codec.lazyInitialized(Registries.ITEM_COMPONENTS::getCodec);
-    Codec<DataComponent<?>> PERSISTENT_CODEC = CODEC.validate(componentType -> componentType.shouldSkipSerialization() ? DataResult.error(() -> "Encountered transient component " + Registries.ITEM_COMPONENTS.getId(componentType)) : DataResult.success(componentType));
+public interface ItemComponent<T> {
+    Codec<ItemComponent<?>> CODEC = Codec.lazyInitialized(Registries.ITEM_COMPONENTS::getCodec);
+    Codec<ItemComponent<?>> PERSISTENT_CODEC = CODEC.validate(componentType -> componentType.shouldSkipSerialization() ? DataResult.error(() -> "Encountered transient component " + Registries.ITEM_COMPONENTS.getId(componentType)) : DataResult.success(componentType));
 
-    Codec<Map<DataComponent<?>, Object>> TYPE_TO_VALUE_MAP_CODEC = Codec.dispatchedMap(PERSISTENT_CODEC, DataComponent::getCodecOrThrow);
+    Codec<Map<ItemComponent<?>, Object>> TYPE_TO_VALUE_MAP_CODEC = Codec.dispatchedMap(PERSISTENT_CODEC, ItemComponent::getCodecOrThrow);
 
     static <T> Builder<T> getBuilder() {
         return new Builder<>();
@@ -30,8 +30,8 @@ public interface DataComponent<T> {
             return this;
         }
 
-        public DataComponent<T> build() {
-            return new SimpleDataComponent<>(this.codec);
+        public ItemComponent<T> build() {
+            return new SimpleItemComponent<>(this.codec);
         }
     }
 
@@ -47,11 +47,11 @@ public interface DataComponent<T> {
         return codec;
     }
 
-    class SimpleDataComponent<T> implements DataComponent<T> {
+    class SimpleItemComponent<T> implements ItemComponent<T> {
         @Nullable
         private final Codec<T> codec;
 
-        SimpleDataComponent(@Nullable Codec<T> codec) {
+        SimpleItemComponent(@Nullable Codec<T> codec) {
             this.codec = codec;
         }
 
