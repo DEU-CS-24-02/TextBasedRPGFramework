@@ -1,6 +1,6 @@
 package net.biryeongtrain.text_emulator.item;
 
-import net.biryeongtrain.text_emulator.item.component.type.ItemComponents;
+import net.biryeongtrain.text_emulator.item.component.ItemComponents;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.registry.Registry;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;

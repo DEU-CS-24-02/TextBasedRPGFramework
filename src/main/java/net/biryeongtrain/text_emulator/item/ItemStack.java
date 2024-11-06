@@ -2,19 +2,26 @@ package net.biryeongtrain.text_emulator.item;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.biryeongtrain.text_emulator.entity.Slot;
 import net.biryeongtrain.text_emulator.io.Serializable;
 import net.biryeongtrain.text_emulator.item.component.ComponentChanges;
 import net.biryeongtrain.text_emulator.item.component.ComponentMap;
 import net.biryeongtrain.text_emulator.item.component.ComponentMapImpl;
-import net.biryeongtrain.text_emulator.item.component.DataComponent;
-import net.biryeongtrain.text_emulator.item.component.type.ItemComponents;
+import net.biryeongtrain.text_emulator.item.component.ItemComponent;
+import net.biryeongtrain.text_emulator.item.component.ItemComponents;
 import net.biryeongtrain.text_emulator.item.component.type.SlotInstance;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.utils.Codecs;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * 아이템의 실제 인스턴스인 ItemStack 입니다.
+ * ItemStack은 아이템의 종류와 그 정보를 가지고고 있습니다.
+ * ItemStack은 아이템의 갯수, 성질, 특성을 가지며, 수정이 이루어지는 객체입니다.
+ * 플레이어가 주어진 아이템은 모두 Item 클래스가 아닌 ItemStack의 인스턴스를 반환해야합니다.
+ */
 public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
     public static final Codec<ItemStack> CODEC = Codec.lazyInitialized(
             () -> RecordCodecBuilder.create((instance) -> instance.group(
@@ -61,7 +68,8 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
 
     @Override
     public ItemStack serialize(JsonElement element) {
-        return null;
+        var test = CODEC.decode(JsonOps.INSTANCE, element);
+        return test.result().get().getFirst();
     }
 
     public boolean isEmpty() {
@@ -76,11 +84,16 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
         return this.count;
     }
 
+    /**
+     * 해당 ItemStack 이 Item 인스턴스와 같은지 확인합니다.
+     * @param item 비교하려는 아이템
+     * @return 같은 아이템이면 {@code true}
+     */
     public boolean isOf(Item item) {
         return this.base == item;
     }
 
-    public <T> void set(DataComponent<T> type, T value) {
+    public <T> void set(ItemComponent<T> type, T value) {
         this.components.set(type, value);
     }
 
@@ -88,6 +101,7 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
     public ComponentMap getComponents() {
         return (!this.isEmpty() ? this.components : ComponentMap.EMPTY);
     }
+
 
     public void shrink() {
         this.count--;

@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 
 public class ComponentMapImpl implements ComponentMap {
     private final ComponentMap baseComponents;
-    private Reference2ObjectMap<DataComponent<?>, Optional<?>> changedComponents;
+    private Reference2ObjectMap<ItemComponent<?>, Optional<?>> changedComponents;
     private boolean copyOnWrite;
 
     public ComponentMapImpl(ComponentMap baseComponents) {
         this(baseComponents, Reference2ObjectMaps.emptyMap(), true);
     }
 
-    public ComponentMapImpl(ComponentMap baseComponents, Reference2ObjectMap<DataComponent<?>, Optional<?>> changedComponents, boolean copyOnWrite) {
+    public ComponentMapImpl(ComponentMap baseComponents, Reference2ObjectMap<ItemComponent<?>, Optional<?>> changedComponents, boolean copyOnWrite) {
         this.baseComponents = baseComponents;
         this.changedComponents = changedComponents;
         this.copyOnWrite = copyOnWrite;
@@ -34,8 +34,8 @@ public class ComponentMapImpl implements ComponentMap {
         return componentMapImpl;
     }
 
-    private static boolean shouldReuseChangesMap(ComponentMap baseComponents, Reference2ObjectMap<DataComponent<?>, Optional<?>> changedComponents) {
-        for (Map.Entry<DataComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(changedComponents)) {
+    private static boolean shouldReuseChangesMap(ComponentMap baseComponents, Reference2ObjectMap<ItemComponent<?>, Optional<?>> changedComponents) {
+        for (Map.Entry<ItemComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(changedComponents)) {
             Object object = baseComponents.get(entry.getKey());
             Optional<?> optional = entry.getValue();
             if (optional.isPresent() && !optional.get().equals(object)) {
@@ -52,7 +52,7 @@ public class ComponentMapImpl implements ComponentMap {
     }
 
     @Override
-    public <T> T get(DataComponent<? extends T> key) {
+    public <T> T get(ItemComponent<? extends T> key) {
         Optional<T> optional = (Optional<T>) this.changedComponents.get(key);
 
         if (optional != null) {
@@ -63,7 +63,7 @@ public class ComponentMapImpl implements ComponentMap {
     }
 
     @Nullable
-    public <T> T set(DataComponent<? super T> type, @Nullable T value) {
+    public <T> T set(ItemComponent<? super T> type, @Nullable T value) {
         this.onWrite();
         T object = (T) this.baseComponents.get(type);
         Optional<Object> optional = Objects.equals(value, object) ? (Optional<Object>) this.changedComponents.remove(type) : (Optional<Object>) this.changedComponents.put(type, Optional.ofNullable(value));
@@ -75,7 +75,7 @@ public class ComponentMapImpl implements ComponentMap {
     }
 
     @Nullable
-    public <T> T remove(DataComponent<? extends T> type) {
+    public <T> T remove(ItemComponent<? extends T> type) {
         this.onWrite();
         T object = this.baseComponents.get(type);
         Optional<Object> optional = object != null ? (Optional<Object>) this.changedComponents.put(type, Optional.empty()) : (Optional<Object>) this.changedComponents.remove(type);
@@ -89,12 +89,12 @@ public class ComponentMapImpl implements ComponentMap {
 
     public void applyChanges(ComponentChanges changes) {
         this.onWrite();
-        for (Map.Entry<DataComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(changes.changedComponents)) {
+        for (Map.Entry<ItemComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(changes.changedComponents)) {
             this.applyChange(entry.getKey(), entry.getValue());
         }
     }
 
-    private void applyChange(DataComponent<?> type, Optional<?> value) {
+    private void applyChange(ItemComponent<?> type, Optional<?> value) {
         Object object = this.baseComponents.get(type);
         if (value.isPresent()) {
             if (value.get().equals(object)) {
@@ -123,12 +123,12 @@ public class ComponentMapImpl implements ComponentMap {
 
 
     @Override
-    public Set<DataComponent<?>> getTypes() {
+    public Set<ItemComponent<?>> getTypes() {
         if (this.changedComponents.isEmpty()) {
             return this.baseComponents.getTypes();
         }
-        ReferenceArraySet<DataComponent<?>> set = new ReferenceArraySet<>(this.baseComponents.getTypes());
-        for (Reference2ObjectMap.Entry<DataComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(this.changedComponents)) {
+        ReferenceArraySet<ItemComponent<?>> set = new ReferenceArraySet<>(this.baseComponents.getTypes());
+        for (Reference2ObjectMap.Entry<ItemComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(this.changedComponents)) {
             Optional<?> optional = entry.getValue();
             if (optional.isPresent()) {
                 set.add(entry.getKey());
@@ -154,9 +154,9 @@ public class ComponentMapImpl implements ComponentMap {
         }
 
         ArrayList<Component<?>> list = new ArrayList<>(this.changedComponents.size() + this.baseComponents.size());
-        for (Reference2ObjectMap.Entry<DataComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(this.changedComponents)) {
+        for (Reference2ObjectMap.Entry<ItemComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(this.changedComponents)) {
             if (entry.getValue().isEmpty()) continue;
-            list.add(Component.of((DataComponent)entry.getKey(), ((Optional)entry.getValue()).get()));
+            list.add(Component.of((ItemComponent)entry.getKey(), ((Optional)entry.getValue()).get()));
         }
         for (Component<?> component : this.baseComponents) {
             if (this.changedComponents.containsKey(component.type())) continue;
@@ -169,7 +169,7 @@ public class ComponentMapImpl implements ComponentMap {
     @Override
     public int size() {
         int i = baseComponents.size();
-        for (Reference2ObjectMap.Entry<DataComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(this.changedComponents)) {
+        for (Reference2ObjectMap.Entry<ItemComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(this.changedComponents)) {
             boolean bl = entry.getValue().isPresent();
             if (bl && !baseComponents.contains(entry.getKey())) {
                 continue;

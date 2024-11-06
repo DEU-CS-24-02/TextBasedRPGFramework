@@ -18,12 +18,12 @@ import java.util.stream.StreamSupport;
 public interface ComponentMap extends Iterable<Component<?>> {
     ComponentMap EMPTY = new ComponentMap() {
         @Override
-        public <T> T get(DataComponent<? extends T> key) {
+        public <T> T get(ItemComponent<? extends T> key) {
             return null;
         }
 
         @Override
-        public Set<DataComponent<?>> getTypes() {
+        public Set<ItemComponent<?>> getTypes() {
             return Set.of();
         }
 
@@ -34,30 +34,30 @@ public interface ComponentMap extends Iterable<Component<?>> {
         }
     };
 
-    Codec<ComponentMap> CODEC = ComponentMap.createCodecFromValueMap(DataComponent.TYPE_TO_VALUE_MAP_CODEC);
+    Codec<ComponentMap> CODEC = ComponentMap.createCodecFromValueMap(ItemComponent.TYPE_TO_VALUE_MAP_CODEC);
 
-    static Codec<ComponentMap> createCodecFromValueMap(Codec<Map<DataComponent<?>, Object>> typeToValueMapCodec) {
+    static Codec<ComponentMap> createCodecFromValueMap(Codec<Map<ItemComponent<?>, Object>> typeToValueMapCodec) {
         return typeToValueMapCodec.flatComapMap(Builder::build, componentMap -> {
             int i = componentMap.size();
             if (i == 0) {
                 return DataResult.success(Reference2ObjectMaps.emptyMap());
             }
 
-            Reference2ObjectArrayMap<DataComponent<?>, Object> reference2ObjectArrayMap = new Reference2ObjectArrayMap<>(i);
+            Reference2ObjectArrayMap<ItemComponent<?>, Object> reference2ObjectArrayMap = new Reference2ObjectArrayMap<>(i);
             for (Component<?> component : componentMap) {
                 if (component.type().shouldSkipSerialization()) continue;
                 reference2ObjectArrayMap.put(component.type(), component.value());
             }
 
-            return DataResult.success((Map<DataComponent<?>, Object>)reference2ObjectArrayMap);
+            return DataResult.success((Map<ItemComponent<?>, Object>)reference2ObjectArrayMap);
         });
     }
 
-    <T> T get(DataComponent<? extends T> key);
+    <T> T get(ItemComponent<? extends T> key);
 
-    Set<DataComponent<?>> getTypes();
+    Set<ItemComponent<?>> getTypes();
 
-    default boolean contains(DataComponent<?> key) {
+    default boolean contains(ItemComponent<?> key) {
         return this.get(key) != null;
     }
 
@@ -70,7 +70,7 @@ public interface ComponentMap extends Iterable<Component<?>> {
     }
 
     @Nullable
-    default <T> Component<T> copy(DataComponent<T> type) {
+    default <T> Component<T> copy(ItemComponent<T> type) {
         T object = this.get(type);
         return object != null ? new Component<>(type, object) : null;
     }
@@ -78,25 +78,25 @@ public interface ComponentMap extends Iterable<Component<?>> {
     @NotNull
     @Override
     default Iterator<Component<?>> iterator() {
-        return Iterators.transform(this.getTypes().iterator(), type -> Objects.requireNonNull(this.copy((DataComponent<?>)type)));
+        return Iterators.transform(this.getTypes().iterator(), type -> Objects.requireNonNull(this.copy((ItemComponent<?>)type)));
     }
 
-    default ComponentMap filtered(final Predicate<DataComponent<?>> predicate) {
+    default ComponentMap filtered(final Predicate<ItemComponent<?>> predicate) {
         return new ComponentMap() {
 
             @Override
-            public <T> T get(DataComponent<? extends T> key) {
+            public <T> T get(ItemComponent<? extends T> key) {
                 return null;
             }
 
             @Override
-            public Set<DataComponent<?>> getTypes() {
+            public Set<ItemComponent<?>> getTypes() {
                 return Set.of();
             }
         };
     }
 
-    default <T> T getOrDefault(DataComponent<? extends T> key, T defaultValue) {
+    default <T> T getOrDefault(ItemComponent<? extends T> key, T defaultValue) {
         T value = this.get(key);
         return value != null ? value : defaultValue;
     }
@@ -110,14 +110,14 @@ public interface ComponentMap extends Iterable<Component<?>> {
     }
     // 컴포넌트 기본 설정 때 쓸 빌더
     class Builder {
-        private final Reference2ObjectMap<DataComponent<?>, Object> map = new Reference2ObjectArrayMap<>();
+        private final Reference2ObjectMap<ItemComponent<?>, Object> map = new Reference2ObjectArrayMap<>();
 
-        public <T> Builder add(DataComponent<T> type, @Nullable T value) {
+        public <T> Builder add(ItemComponent<T> type, @Nullable T value) {
             this.put(type, value);
             return this;
         }
 
-        <T> void put(DataComponent<T> type, @Nullable Object value) {
+        <T> void put(ItemComponent<T> type, @Nullable Object value) {
             if (value != null) {
                 this.map.put(type, value);
             } else {
@@ -134,7 +134,7 @@ public interface ComponentMap extends Iterable<Component<?>> {
            return Builder.build(this.map);
         }
 
-        private static ComponentMap build(Map<DataComponent<?>, Object> map) {
+        private static ComponentMap build(Map<ItemComponent<?>, Object> map) {
             if (map.isEmpty()) {
                 return EMPTY;
             }
@@ -145,20 +145,20 @@ public interface ComponentMap extends Iterable<Component<?>> {
         }
     }
 
-    record SimpleComponentMap(Reference2ObjectMap<DataComponent<?>, Object> map) implements ComponentMap {
+    record SimpleComponentMap(Reference2ObjectMap<ItemComponent<?>, Object> map) implements ComponentMap {
         @Override
         @Nullable
-        public <T> T get(DataComponent<? extends T> type) {
+        public <T> T get(ItemComponent<? extends T> type) {
             return (T)this.map.get(type);
         }
 
         @Override
-        public boolean contains(DataComponent<?> type) {
+        public boolean contains(ItemComponent<?> type) {
             return this.map.containsKey(type);
         }
 
         @Override
-        public Set<DataComponent<?>> getTypes() {
+        public Set<ItemComponent<?>> getTypes() {
             return this.map.keySet();
         }
 

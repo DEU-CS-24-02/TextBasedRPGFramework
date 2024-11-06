@@ -6,12 +6,12 @@ import com.mojang.serialization.DynamicOps;
 
 import java.util.Map;
 
-public record Component<T> (DataComponent<T> type, T value) {
-    static Component<?> of (Map.Entry<DataComponent<?>, Object> entry) {
-        return Component.of((DataComponent<Object>)entry.getKey(), entry.getValue());
+public record Component<T> (ItemComponent<T> type, T value) {
+    static Component<?> of (Map.Entry<ItemComponent<?>, Object> entry) {
+        return Component.of((ItemComponent<Object>)entry.getKey(), entry.getValue());
     }
 
-    public static <T> Component<T> of(DataComponent<T> type, T value) {
+    public static <T> Component<T> of(ItemComponent<T> type, T value) {
         return new Component<>(type, value);
     }
 

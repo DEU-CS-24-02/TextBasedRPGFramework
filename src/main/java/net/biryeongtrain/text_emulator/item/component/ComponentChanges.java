@@ -24,7 +24,7 @@ public class ComponentChanges {
                     return EMPTY;
                 }
 
-                Reference2ObjectArrayMap<DataComponent<?>, Optional<?>> reference2ObjectArrayMap = new Reference2ObjectArrayMap(changes.size());
+                Reference2ObjectArrayMap<ItemComponent<?>, Optional<?>> reference2ObjectArrayMap = new Reference2ObjectArrayMap(changes.size());
                 for (Map.Entry<Type, ?> entry : changes.entrySet()) {
                     Type type = entry.getKey();
                     if (type.removed) {
@@ -37,8 +37,8 @@ public class ComponentChanges {
                 return new ComponentChanges(reference2ObjectArrayMap);
             }, changes -> {
                 Reference2ObjectArrayMap<Type, Object> reference2ObjectArrayMap = new Reference2ObjectArrayMap<>(changes.changedComponents.size());
-                for (Map.Entry<DataComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(changes.changedComponents)) {
-                    DataComponent<?> component = entry.getKey();
+                for (Map.Entry<ItemComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(changes.changedComponents)) {
+                    ItemComponent<?> component = entry.getKey();
                     if (component.shouldSkipSerialization()) {
                         continue;
                     }
@@ -54,18 +54,18 @@ public class ComponentChanges {
     );
     private static final String REMOVE_PREFIX = "!";
 
-    final Reference2ObjectMap<DataComponent<?>, Optional<?>> changedComponents;
+    final Reference2ObjectMap<ItemComponent<?>, Optional<?>> changedComponents;
 
-    public ComponentChanges(Reference2ObjectMap<DataComponent<?>, Optional<?>> changedComponents) {
+    public ComponentChanges(Reference2ObjectMap<ItemComponent<?>, Optional<?>> changedComponents) {
         this.changedComponents = changedComponents;
     }
 
     @Nullable
-    public <T> Optional<? extends T> get(DataComponent<? extends T> type) {
+    public <T> Optional<? extends T> get(ItemComponent<? extends T> type) {
         return (Optional) this.changedComponents.get(type);
     }
 
-    public Set<Map.Entry<DataComponent<?>, Optional<?>>> entrySet() {
+    public Set<Map.Entry<ItemComponent<?>, Optional<?>>> entrySet() {
         return this.changedComponents.entrySet();
     }
 
@@ -73,12 +73,12 @@ public class ComponentChanges {
         return this.changedComponents.size();
     }
 
-    public ComponentChanges withRemovedif(Predicate<DataComponent<?>> removedTypePredicate) {
+    public ComponentChanges withRemovedif(Predicate<ItemComponent<?>> removedTypePredicate) {
         if (this.isEmpty()) {
             return EMPTY;
         }
 
-        Reference2ObjectArrayMap<DataComponent<?>, Optional<?>> reference2ObjectArrayMap = new Reference2ObjectArrayMap<>(this.changedComponents.size());
+        Reference2ObjectArrayMap<ItemComponent<?>, Optional<?>> reference2ObjectArrayMap = new Reference2ObjectArrayMap<>(this.changedComponents.size());
         reference2ObjectArrayMap.keySet().removeIf(removedTypePredicate);
         if (reference2ObjectArrayMap.isEmpty()) {
             return EMPTY;
@@ -95,7 +95,7 @@ public class ComponentChanges {
             return AddedRemovedPair.EMPTY;
         }
         ComponentMap.Builder builder = ComponentMap.builder();
-        Set<DataComponent<?>> set = Sets.newIdentityHashSet();
+        Set<ItemComponent<?>> set = Sets.newIdentityHashSet();
         this.changedComponents.forEach((type, value) -> {
             if (value.isPresent()) {
                 builder.put(type, value.get());
@@ -123,12 +123,12 @@ public class ComponentChanges {
         return toString(this.changedComponents);
     }
 
-    static String toString(Reference2ObjectMap<DataComponent<?>, Optional<?>> changes) {
+    static String toString(Reference2ObjectMap<ItemComponent<?>, Optional<?>> changes) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append('{');
         boolean bl = true;
 
-        for (Map.Entry<DataComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(changes)) {
+        for (Map.Entry<ItemComponent<?>, Optional<?>> entry : Reference2ObjectMaps.fastIterable(changes)) {
             if (bl) {
                 bl = false;
             } else {
@@ -149,14 +149,14 @@ public class ComponentChanges {
     }
 
     public static class Builder {
-        private final Reference2ObjectMap<DataComponent<?>, Optional<?>> changes = new Reference2ObjectArrayMap<>();
+        private final Reference2ObjectMap<ItemComponent<?>, Optional<?>> changes = new Reference2ObjectArrayMap<>();
 
-        public <T> Builder add(DataComponent<T> type, T value) {
+        public <T> Builder add(ItemComponent<T> type, T value) {
             this.changes.put(type, Optional.of(value));
             return this;
         }
 
-        public <T> Builder remove(DataComponent<T> type) {
+        public <T> Builder remove(ItemComponent<T> type) {
             this.changes.put(type, Optional.empty());
             return this;
         }
@@ -173,14 +173,14 @@ public class ComponentChanges {
         }
     }
 
-    public record AddedRemovedPair(ComponentMap added, Set<DataComponent<?>> removed) {
+    public record AddedRemovedPair(ComponentMap added, Set<ItemComponent<?>> removed) {
         public static final AddedRemovedPair EMPTY = new AddedRemovedPair(ComponentMap.EMPTY, Set.of());
     }
 
-    record Type(DataComponent<?> type, boolean removed) {
+    record Type(ItemComponent<?> type, boolean removed) {
         public static final Codec<Type> CODEC = Codec.STRING.flatXmap(id -> {
                     Identifier identifier;
-                    DataComponent<?> componentType;
+                    ItemComponent<?> componentType;
                     boolean bl = id.startsWith(REMOVE_PREFIX);
 
                     if (bl) {
@@ -194,7 +194,7 @@ public class ComponentChanges {
                     }
                     return DataResult.success(new Type(componentType, bl));
                 }, type -> {
-                    DataComponent<?> component = type.type;
+                    ItemComponent<?> component = type.type;
                     Identifier identifier = Registries.ITEM_COMPONENTS.getId(component);
                     if (identifier == null) {
                         return DataResult.error(() -> "Unknown component type: " + component);
