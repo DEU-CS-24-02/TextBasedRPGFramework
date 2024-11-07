@@ -16,6 +16,7 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unused")
 public interface StringIdentifiable {
     int CACHED_MAP_THRESHOLD = 16;
 
@@ -43,12 +44,12 @@ public interface StringIdentifiable {
     static <T extends StringIdentifiable> Function<String, T> createMapper(T[] values, Function<String, String> valueNameTransformer) {
         if (values.length > CACHED_MAP_THRESHOLD) {
             Map<String, T> map = Arrays.stream(values)
-                    .collect(Collectors.toMap(value -> (String)valueNameTransformer.apply(value.asString()), value -> value));
+                    .collect(Collectors.toMap(value -> valueNameTransformer.apply(value.asString()), value -> value));
             return name -> name == null ? null : (T) map.get(name);
         } else {
             return name -> {
                 for (T stringIdentifiable : values) {
-                    if (((String)valueNameTransformer.apply(stringIdentifiable.asString())).equals(name)) {
+                    if (valueNameTransformer.apply(stringIdentifiable.asString()).equals(name)) {
                         return stringIdentifiable;
                     }
                 }
@@ -88,22 +89,23 @@ public interface StringIdentifiable {
         }
     }
 
+    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     class EnumCodec<E extends Enum<E> & StringIdentifiable> extends StringIdentifiable.BasicCodec<E> {
         private final Function<String, E> idToIdentifiable;
 
         public EnumCodec(E[] values, Function<String, E> idToIdentifiable) {
-            super(values, idToIdentifiable, enum_ -> ((Enum)enum_).ordinal());
+            super(values, idToIdentifiable, Enum::ordinal);
             this.idToIdentifiable = idToIdentifiable;
         }
 
         @Nullable
         public E byId(@Nullable String id) {
-            return (E)this.idToIdentifiable.apply(id);
+            return this.idToIdentifiable.apply(id);
         }
 
         public E byId(@Nullable String id, E fallback) {
-            return (E) Objects.requireNonNullElse(this.byId(id), fallback);
+            return Objects.requireNonNullElse(this.byId(id), fallback);
         }
     }
 }
