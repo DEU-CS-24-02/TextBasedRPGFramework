@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +16,17 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * 실제 Component를 저장할 저장소의 추상형입니다. 두가지 구현부가 존재합니다.
+ * {@link SimpleComponentMap} 불변형 구현부입니다. {@link net.biryeongtrain.text_emulator.item.Item} 의 Component 저장소로 사용됩니다. <br>
+ * {@link ComponentMapImpl} 가변형 구현부입니다. {@link net.biryeongtrain.text_emulator.item.ItemStack} 의 Component 저장소로 사용됩니다. <br>
+ */
+@ApiStatus.NonExtendable
+@SuppressWarnings("unused")
 public interface ComponentMap extends Iterable<Component<?>> {
+    /**
+     * 빈 Component 구현부입니다.
+     */
     ComponentMap EMPTY = new ComponentMap() {
         @Override
         public <T> T get(ItemComponent<? extends T> key) {
@@ -145,6 +156,10 @@ public interface ComponentMap extends Iterable<Component<?>> {
         }
     }
 
+    /**
+     * 불변 타입의 {@link ComponentMap} 구현부입니다. 해당 인스턴스는 아이템에 종속적입니다.
+     * @param map
+     */
     record SimpleComponentMap(Reference2ObjectMap<ItemComponent<?>, Object> map) implements ComponentMap {
         @Override
         @Nullable
