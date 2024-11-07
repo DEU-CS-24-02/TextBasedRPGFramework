@@ -17,6 +17,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * 컴포넌트 변경점 여러개를 {@link ComponentMapImpl}에 한번에 넣기위해 사용합니다.
+ * 일반적으로는 {@link ComponentChanges.Builder}를 이용하여 해당 클래스를 생성하는 것이 바람직합니다.
+ */
+@SuppressWarnings({"unused", "unchecked", "rawtypes"})
 public class ComponentChanges {
     public static final ComponentChanges EMPTY = new ComponentChanges(Reference2ObjectMaps.emptyMap());
     public static final Codec<ComponentChanges> CODEC = Codec.dispatchedMap(Type.CODEC, Type::getValueCodec).xmap(changes -> {
@@ -24,7 +29,7 @@ public class ComponentChanges {
                     return EMPTY;
                 }
 
-                Reference2ObjectArrayMap<ItemComponent<?>, Optional<?>> reference2ObjectArrayMap = new Reference2ObjectArrayMap(changes.size());
+                Reference2ObjectArrayMap<ItemComponent<?>, Optional<?>> reference2ObjectArrayMap = new Reference2ObjectArrayMap<>(changes.size());
                 for (Map.Entry<Type, ?> entry : changes.entrySet()) {
                     Type type = entry.getKey();
                     if (type.removed) {
@@ -73,7 +78,7 @@ public class ComponentChanges {
         return this.changedComponents.size();
     }
 
-    public ComponentChanges withRemovedif(Predicate<ItemComponent<?>> removedTypePredicate) {
+    public ComponentChanges withRemovedIf(Predicate<ItemComponent<?>> removedTypePredicate) {
         if (this.isEmpty()) {
             return EMPTY;
         }

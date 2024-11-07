@@ -10,6 +10,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 실제 아이템 스택이 가지는 컴포넌트를 저장하는 Mutable 클래스입니다. <br></br>
+ * {@link SimpleComponentMap}
+ * 과 다른 점은 SimpleComponentMap은 불변입니다. (아이템 자체에 내장되어있는 기본값으로 들어가는 컴포넌트가 들어가있는 클래스입니다. ) <br>
+ * {@code ComponentMapImpl}에는 {@code ComponentMap}(baseComponent), {@code ref2ObjectMap}(changedComponent), {@code copyOnWrite}필드가 존재합니다. <br>
+ *
+ * {@code baseComponent}은 해당 컴포넌트가 참조할 기본 컴포넌트입니다. 만약 요청받은 컴포넌트가 changedComponent에 존재하지 않을 때 기본값을 전달할 떄 사용됩니다. <br>
+ * {@code changedComponent}는 변경된 컴포넌트를 보유합니다. 배열 맵으로 되어 있기 때문에, 값이 새로 생길 떄 마다 새로운 인스턴스를 생성하여 값을 복사합니다. <br>
+ * {@code copyOnWrite} copy-on-write 기법입니다. 해당 bool 타입은 클래스의 {@code getChanges()} 를 실행시킬 떄 {@code true} 가 됩니다. <br>
+ * 이는 {@code getChanges()} 를 실행하고 나서 Component의 내용이 바뀌는 것을 getChanges로 가져간 부분이 영향이 없게끔 하기 위함입니다. <br>
+ * <a href="https://en.wikipedia.org/wiki/Copy-on-write">Copy-On-Write Wikipedia</a> <br>
+ *
+ * 자세한 로직은 {@link ComponentMapImpl#get(ItemComponent)} {@link ComponentMapImpl#set(ItemComponent, Object)}
+ * {@link ComponentMapImpl#applyChanges(ComponentChanges)} 를 참조하세요.
+ */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class ComponentMapImpl implements ComponentMap {
     private final ComponentMap baseComponents;
     private Reference2ObjectMap<ItemComponent<?>, Optional<?>> changedComponents;
@@ -55,7 +71,7 @@ public class ComponentMapImpl implements ComponentMap {
     public <T> T get(ItemComponent<? extends T> key) {
         Optional<T> optional = (Optional<T>) this.changedComponents.get(key);
 
-        if (optional != null) {
+        if (optional.isPresent()) {
             return optional.orElseGet(() -> this.baseComponents.get(key));
         }
 
@@ -100,6 +116,7 @@ public class ComponentMapImpl implements ComponentMap {
             if (value.get().equals(object)) {
                 this.changedComponents.remove(type);
             } else {
+
                 this.changedComponents.put(type, value);
             }
         } else if (object != null) {
@@ -198,11 +215,9 @@ public class ComponentMapImpl implements ComponentMap {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ComponentMapImpl)) return false;
-        ComponentMapImpl componentMapImpl = (ComponentMapImpl)o;
+        if (!(o instanceof ComponentMapImpl componentMapImpl)) return false;
         if (!this.baseComponents.equals(componentMapImpl.baseComponents)) return false;
-        if (!this.changedComponents.equals(componentMapImpl.changedComponents)) return false;
-        return true;
+        return this.changedComponents.equals(componentMapImpl.changedComponents);
     }
 
     @Override

@@ -11,6 +11,11 @@ import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
+/**
+ * 레지스트리에 등록할 컴포넌트를 열거한 클래스입니다.
+ * 컴포넌트도 동적으로 할수는 있는데 안하는 이유는 게임 시스템이랑 연관있어서 그렇습니다.
+ * 시스템까지 동적으로 하면 개발 시간이 부족해요.
+ */
 @SuppressWarnings({"unchecked", "unused"})
 public class ItemComponents {
     public static ItemComponent<Consumable> CONSUMABLE = register(Identifier.of("consumable"), (builder) -> builder.codec(Consumable.CODEC));
