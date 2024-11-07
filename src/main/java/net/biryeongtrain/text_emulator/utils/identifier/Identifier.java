@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 import java.util.function.UnaryOperator;
 
 // Imported Code in Identifier class from yarn
-public class Identifier implements Comparable<Identifier>{
+public class Identifier implements Comparable<Identifier> {
     public static final Codec<Identifier> CODEC = Codec.STRING.comapFlatMap(Identifier::validate, Identifier::toString).stable();
 
     private final String namespace;

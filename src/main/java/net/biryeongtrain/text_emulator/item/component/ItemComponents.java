@@ -13,7 +13,6 @@ import java.util.function.UnaryOperator;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class ItemComponents {
-    // TODO : add DESCRIPTION, DAMAGE, ARMOR, RARITY, DURABILITY
     public static ItemComponent<Consumable> CONSUMABLE = register(Identifier.of("consumable"), (builder) -> builder.codec(Consumable.CODEC));
     public static ItemComponent<List<SlotInstance>> SLOT_INSTANCE = register(Identifier.of("slot_instance"), (builder) -> builder.codec(SlotInstance.CODEC.listOf()));
     public static ItemComponent<Integer> MAX_STACK_SIZE = register(Identifier.of("max_stack_size"), (builder) -> builder.codec(Codec.INT));
