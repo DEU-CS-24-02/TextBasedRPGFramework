@@ -2,6 +2,7 @@ import com.mojang.serialization.JsonOps;
 import net.biryeongtrain.text_emulator.Main;
 import net.biryeongtrain.text_emulator.item.ItemStack;
 import net.biryeongtrain.text_emulator.item.Items;
+import net.biryeongtrain.text_emulator.item.component.ItemComponents;
 import net.biryeongtrain.text_emulator.utils.Util;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,8 @@ public class IOTest {
         Path path = Path.of(strPath);
 
         ItemStack stack = new ItemStack(Items.AIR);
+        stack.set(ItemComponents.MAX_STACK_SIZE, 100);
+        stack.set(ItemComponents.DAMAGE, 100F);
         Future<Integer> result = Util.IOExecutor.submit(() -> {
             try {
                 Files.createDirectories(path);
