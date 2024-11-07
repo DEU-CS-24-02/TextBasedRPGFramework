@@ -17,6 +17,7 @@ public interface Registry<T> extends IndexedIterable<T> {
     T get(@Nullable RegistryKey<T> value);
     T get(Identifier value);
 
+    boolean isFrozen();
     void freeze();
     void clear();
     default Codec<T> getCodec() {

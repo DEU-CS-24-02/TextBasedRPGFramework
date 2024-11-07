@@ -50,6 +50,11 @@ public class SimpleRegistry<T> implements Registry<T>{
     }
 
     @Override
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    @Override
     public void freeze() {
         this.frozen = true;
     }
