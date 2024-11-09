@@ -2,7 +2,9 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.entity.Character;
 import net.biryeongtrain.text_emulator.entity.Slot;
 import net.biryeongtrain.text_emulator.item.ItemStack;
 import net.biryeongtrain.text_emulator.item.Items;
@@ -13,6 +15,7 @@ import net.biryeongtrain.text_emulator.item.component.ItemComponents;
 import net.biryeongtrain.text_emulator.item.component.type.Rarity;
 import net.biryeongtrain.text_emulator.item.component.type.SlotInstance;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +28,17 @@ import java.util.Optional;
 import static net.biryeongtrain.text_emulator.Main.LOGGER;
 
 public class TestMain {
+    // 사용자로부터 Character 정보 입력받기
+    private Character character;
+
+
     private ComponentMap map;
     private ComponentMapImpl components;
     @BeforeEach
     public void beforeTest() {
+        // Character 객체 생성
+        character = Character.createCharacterFromInput(); // 사용자 입력 받기
+
         map = ComponentMap.builder()
                 .add(ItemComponents.MAX_STACK_SIZE, 100)
                 .add(ItemComponents.CONSUMABLE, new Consumable(10))
@@ -36,6 +46,22 @@ public class TestMain {
 
         components = new ComponentMapImpl(map);
         components.set(ItemComponents.MAX_STACK_SIZE, 1);
+    }
+
+    @Test
+    @DisplayName("Character Information Test")
+    public void testCharacterInfo() {
+        // Character 정보 출력
+        LOGGER.info("Character Information:");
+        LOGGER.info("시스템 ID: {}", character.getCommentId());
+        LOGGER.info("사용자 이름: {}", character.getCommentName());
+        LOGGER.info("체력: {}", character.getHealth());
+        LOGGER.info("공격력: {}", character.getAttackPower());
+        LOGGER.info("방어력: {}", character.getDefense());
+        LOGGER.info("설명: {}", character.getDescription());
+        LOGGER.info("타입: {}", character.getCommentType());
+        LOGGER.info("엔티티 타입: {}", character.getType());
+        LOGGER.info("태그: {}", character.getTags());
     }
 
     @Test

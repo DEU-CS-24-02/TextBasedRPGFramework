@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * 인벤토리 인터페이스입니다. 상황에 따라 필요한 인벤토리가 존재하면 해당 클래스를 상속받아 사용하세요.
- *
+ * 인벤토리 인터페이스입니다.
+ * 상황에 따라 필요한 인벤토리가 존재하면 해당 클래스를 상속받아 사용하세요.
  */
 public interface Inventory extends Clearable {
     int size();

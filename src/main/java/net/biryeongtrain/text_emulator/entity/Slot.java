@@ -3,7 +3,7 @@ package net.biryeongtrain.text_emulator.entity;
 import net.biryeongtrain.text_emulator.utils.StringIdentifiable;
 
 public enum Slot implements StringIdentifiable {
-    HEAD,
+    HEAD(),
     CHEST_PLATE,
     LEGGINGS,
     BOOTS,

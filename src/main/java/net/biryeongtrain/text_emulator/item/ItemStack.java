@@ -25,10 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
     public static final Codec<ItemStack> CODEC = Codec.lazyInitialized(
             () -> RecordCodecBuilder.create((instance) -> instance.group(
-                    Registries.ITEM.getCodec().fieldOf("id").forGetter(ItemStack::getItem),
-                    Codecs.rangedInt(0, 99).fieldOf("count").forGetter(ItemStack::getCount),
-                    ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(stack -> stack.components.getChanges())
-            ).apply(instance, ItemStack::new)
+                            Registries.ITEM.getCodec().fieldOf("id").forGetter(ItemStack::getItem),
+                            Codecs.rangedInt(0, 99).fieldOf("count").forGetter(ItemStack::getCount),
+                            ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(stack -> stack.components.getChanges())
+                    ).apply(instance, ItemStack::new)
             )
     );
 
