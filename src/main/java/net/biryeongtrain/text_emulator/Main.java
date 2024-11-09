@@ -13,6 +13,5 @@ public class Main {
         LOGGER.info(MarkerFactory.getMarker("TextEmulator"), "Hello, world!");
 
 
-
     }
 }
