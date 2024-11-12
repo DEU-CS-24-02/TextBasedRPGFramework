@@ -43,8 +43,6 @@ public interface Entity extends Serializable<Entity> {
 //         */
         return deserialize(jsonObject);
     }
-    //JSON 요소에서 Entity를 생성하는 메소드를 만들어 주고
-    Entity deserialize(JsonObject jsonObject);
 
     // Entity를 JSON으로 변환하는 메소드
     JsonElement serializeToJson();
