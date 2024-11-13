@@ -1,5 +1,5 @@
 package net.biryeongtrain.text_emulator;
-
+import com.mojang.serialization.DataResult;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.registry.Registry;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
