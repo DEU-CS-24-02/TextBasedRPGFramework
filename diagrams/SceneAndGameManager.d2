@@ -1,0 +1,51 @@
+ScenarioInstance: {
+  shape: class
+  + final scenarioMeta: ScenarioMeta
+  + getId(): Identifier
+  + getDependencies(): Set<Identifier>
+  + isLoaded(): boolean
+  + canLoad(): boolean
+}
+
+GameManager: {
+  shape: class
+  - scenarioInstances: Set<ScenearioInstance>
+  - playedScenes: Set<Scene>
+  - player: Player
+  - currentScene: Scene
+  + getNextScene(): Scene
+  + forceSetScene(Identifier id, Reason reason)
+  + getPlayerCondition(): PlayerCondition
+  + getItem(Idnetifier id): Optional<Item>
+  + getEntity(Identifier id): Optional<Entity>
+  + giveItem(Item item): void
+  + giveItem(ItemStack itemStack): void
+  + damage(Entity entity, float damage): void
+  + damagePlayer(Entity source, float damage, boolean canPenetration): void
+  + heal(Entity entity, float value): void
+  + healPlayer(float value): void
+  + save(): void
+  + getPath(ScenarioPath path): Path
+}
+
+Reason: {
+  SYSTEM
+  DECISION
+  EVENT
+}
+
+ScenarioPath: {
+  shape: class
+  - relativePath: String
+  + ROOT: ScenarioPath(".")
+  + SCENE: ScenarioPath("scene")
+  + ENTITY: ScenarioPath("entity")
+  + ITEM: ScenarioPath("item")
+  + ENTITY_TAG: ScenarioPath("entity_tag")
+
+  + ScenarioPath(String relativePath): ScenarioPath
+}
+
+GameManager -> ScenarioInstance: scenarioInstance
+GameManager -> Reason: reason
+GameManager -> ScenarioPath
