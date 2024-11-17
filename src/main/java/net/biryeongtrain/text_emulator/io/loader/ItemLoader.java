@@ -7,8 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemLoader implements ContentsLoader<Item> {
 
+
     @Override
-    public void load() {
+    public void loadData() {
 
     }
 

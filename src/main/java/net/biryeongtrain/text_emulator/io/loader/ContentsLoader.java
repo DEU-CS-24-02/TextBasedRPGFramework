@@ -4,7 +4,12 @@ import net.biryeongtrain.text_emulator.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
 public interface ContentsLoader<T> {
-    void load();
+    default void load() {
+        this.throwIfFrozen();
+        this.loadData();
+    }
+
+    void loadData();
     @NotNull
     Registry<T> getRegistry();
 
