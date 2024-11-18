@@ -1,10 +1,12 @@
-package net.biryeongtrain.text_emulator.utils;
+package net.biryeongtrain.text_emulator.utils.collections;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Keyable;
+import net.biryeongtrain.text_emulator.utils.Codecs;
+import net.biryeongtrain.text_emulator.utils.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
