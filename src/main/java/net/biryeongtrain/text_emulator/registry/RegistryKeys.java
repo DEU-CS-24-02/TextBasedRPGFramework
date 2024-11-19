@@ -1,6 +1,7 @@
 package net.biryeongtrain.text_emulator.registry;
 
 import net.biryeongtrain.text_emulator.entity.Entity;
+import net.biryeongtrain.text_emulator.entity.EntityType;
 import net.biryeongtrain.text_emulator.item.Item;
 import net.biryeongtrain.text_emulator.item.component.ItemComponent;
 import net.biryeongtrain.text_emulator.level.Scene;
@@ -16,4 +17,5 @@ public class RegistryKeys {
     public static final RegistryKey<Registry<Scene>> SCENE = RegistryKey.ofRegistry(Identifier.of("scene"));
     public static final RegistryKey<Registry<ItemComponent<?>>> ITEM_COMPONENTS = RegistryKey.ofRegistry(Identifier.of("item_components"));
     public static final RegistryKey<Registry<ScenarioMeta>> SCENARIO_META = RegistryKey.ofRegistry(Identifier.of("scenario_meta"));
+    public static final RegistryKey<Registry<EntityType>> ENTITY_TYPE = RegistryKey.ofRegistry(Identifier.of("entity_type"));
 }

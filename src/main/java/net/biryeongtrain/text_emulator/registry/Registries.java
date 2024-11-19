@@ -1,6 +1,7 @@
 package net.biryeongtrain.text_emulator.registry;
 
 import net.biryeongtrain.text_emulator.entity.Entity;
+import net.biryeongtrain.text_emulator.entity.EntityType;
 import net.biryeongtrain.text_emulator.item.Item;
 import net.biryeongtrain.text_emulator.item.component.ItemComponent;
 import net.biryeongtrain.text_emulator.level.Scene;
@@ -16,6 +17,7 @@ public class Registries {
     public static final Registry<Scene> SCENE = Registries.create(RegistryKeys.SCENE, new SimpleRegistry<>(RegistryKeys.SCENE));
     public static final Registry<ItemComponent<?>> ITEM_COMPONENTS = Registries.create(RegistryKeys.ITEM_COMPONENTS, new SimpleRegistry<>(RegistryKeys.ITEM_COMPONENTS));
     public static final Registry<ScenarioMeta> SCENARIO_META = Registries.create(RegistryKeys.SCENARIO_META, new SimpleRegistry<>(RegistryKeys.SCENARIO_META));
+    public static final Registry<EntityType> ENTITY_TYPE = Registries.create(RegistryKeys.ENTITY_TYPE, new SimpleRegistry<>(RegistryKeys.ENTITY_TYPE));
 
     public static final Registry<? extends Registry<?>> REGISTRIES = ROOT;
 
