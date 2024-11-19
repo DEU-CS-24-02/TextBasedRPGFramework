@@ -1,6 +1,6 @@
 package net.biryeongtrain.text_emulator.item.component.type;
 
-import net.biryeongtrain.text_emulator.utils.StringIdentifiable;
+import net.biryeongtrain.text_emulator.utils.collections.StringIdentifiable;
 
 @SuppressWarnings("deprecation")
 public enum Rarity implements StringIdentifiable {

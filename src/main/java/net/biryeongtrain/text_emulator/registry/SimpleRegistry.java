@@ -86,6 +86,7 @@ public class SimpleRegistry<T> implements Registry<T>{
             throw new IllegalStateException("Duplicate entry " + value);
         }
 
+        this.entries.add(value);
         this.idToEntry.put(key, value);
         this.entryToId.put(value, key);
         return value;

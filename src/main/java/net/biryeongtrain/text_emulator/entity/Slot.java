@@ -1,6 +1,6 @@
 package net.biryeongtrain.text_emulator.entity;
 
-import net.biryeongtrain.text_emulator.utils.StringIdentifiable;
+import net.biryeongtrain.text_emulator.utils.collections.StringIdentifiable;
 
 public enum Slot implements StringIdentifiable {
     HEAD,
