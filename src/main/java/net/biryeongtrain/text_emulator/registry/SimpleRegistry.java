@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class SimpleRegistry<T> implements Registry<T>{
-    private boolean frozen = false;
+    private volatile boolean frozen = false;
     final RegistryKey<? extends Registry<T>> key;
     // we use IdentityMap because it uses == instead of equals. all registry value must be singleton
     private final ObjectList<T> entries = new ObjectArrayList<>();
@@ -61,9 +61,10 @@ public class SimpleRegistry<T> implements Registry<T>{
 
     @Override
     public void clear() {
-        this.frozen = false;
         this.entryToId.clear();
         this.idToEntry.clear();
+
+        this.frozen = false;
     }
 
     private void assertNotFrozen(RegistryKey<T> key) {
