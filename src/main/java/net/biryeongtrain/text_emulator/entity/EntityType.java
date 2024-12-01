@@ -7,15 +7,16 @@ import net.biryeongtrain.text_emulator.registry.RegistryKey;
 import net.biryeongtrain.text_emulator.registry.RegistryKeys;
 
 public class EntityType {
-    public static Codec<EntityType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<EntityType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryKey.createCodec(RegistryKeys.ENTITY_TYPE).fieldOf("key").forGetter(EntityType::getKey),
             Codec.FLOAT.fieldOf("defaultHealth").forGetter(EntityType::getDefaultHealth),
             Codec.FLOAT.fieldOf("defaultDamage").forGetter(EntityType::getDefaultDamage),
             Codec.FLOAT.fieldOf("defaultArmor").forGetter(EntityType::getDefaultArmor),
             LootTableManager.CODEC.fieldOf("lootTableManager").forGetter(EntityType::getLootTableManager)
-    ).apply(instance, (EntityType::new)));
+    ).apply(instance, EntityType::new));
 
     private final RegistryKey<EntityType> key;
+
     private final float defaultHealth;
     private final float defaultDamage;
     private final float defaultArmor;

@@ -14,6 +14,6 @@ public enum Slot implements StringIdentifiable {
 
     @Override
     public String asString() {
-        return this.toString();
+        return this.name().toLowerCase().replace("_"," ");
     }
 }
