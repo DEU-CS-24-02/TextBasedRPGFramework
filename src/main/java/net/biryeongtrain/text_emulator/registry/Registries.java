@@ -1,6 +1,8 @@
 package net.biryeongtrain.text_emulator.registry;
 
 import net.biryeongtrain.text_emulator.entity.Entity;
+import net.biryeongtrain.text_emulator.entity.EntityType;
+
 import net.biryeongtrain.text_emulator.item.Item;
 import net.biryeongtrain.text_emulator.item.component.ItemComponent;
 import net.biryeongtrain.text_emulator.level.Scene;
