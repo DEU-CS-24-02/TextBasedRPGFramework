@@ -16,6 +16,9 @@ import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.utils.Codecs;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 아이템의 실제 인스턴스인 ItemStack 입니다.
  * ItemStack은 아이템의 종류와 그 정보를 가지고고 있습니다.
@@ -38,6 +41,9 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
     final ComponentMapImpl components;
     private int count;
 
+    private int upgradeLavel; //현재 강화 레벨
+    private int maxupgradeLevel = 5; // 최대 강화 레벨
+
     public ItemStack(Item item) {
         this(item, 1);
     }
@@ -50,6 +56,14 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
         this.base = item;
         this.count = count;
         this.components = components;
+        this.upgradeLavel = 0; // 초기 강화 레벨은 0
+
+        this.set(ItemComponents.DAMAGE, 10.0f); // 기본 공격력
+        this.set(ItemComponents.ARMOR, 5.0f); // 기본 방어력
+    }
+
+    public boolean canUpgrade() {
+        return this.upgradeLavel < this.maxupgradeLevel; // 현재 레벨이 최대 강화 레벨보다 낮아야 강화 가능
     }
 
     private ItemStack(Item item, int count, ComponentChanges changes) {
@@ -83,6 +97,8 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
     public int getCount() {
         return this.count;
     }
+
+    public int getUpgradeLavel() { return this.upgradeLavel; }
 
     /**
      * 해당 ItemStack 이 Item 인스턴스와 같은지 확인합니다.
@@ -151,4 +167,49 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
         // TODO : EQUIP LOGIC
     }
 
+    // 아이템 쿨타임 관련 메서드
+    public boolean canUse(int currentTurn) {
+        int lastUsedTurn = this.getOrDefault(ItemComponents.LAST_USED_TURN, -1);
+        int cooldown = this.getOrDefault(ItemComponents.COOLDOWN, 0);
+        return currentTurn > lastUsedTurn + cooldown;
+    }
+
+    public boolean useWithCooldown(int currentTurn) {
+        if (!canUse(currentTurn)) {
+            return false; // 쿨타임이 끝나지 않았으면 false를 반환 합니다.
+        }
+        this.set(ItemComponents.LAST_USED_TURN, currentTurn);
+        return true;
+    }
+
+    // 아이템 강화 관련 메서드
+    private void updateStats() {
+
+        float damageBase = this.getOrDefault(ItemComponents.DAMAGE, 0.0f);
+        float armorBase = this.getOrDefault(ItemComponents.ARMOR, 0.0f);
+
+        this.set(ItemComponents.DAMAGE, damageBase + (this.upgradeLavel * 2.0f)); // 공격력 증가량
+        this.set(ItemComponents.ARMOR, armorBase + (this.upgradeLavel * 1.0f)); // 방어력 증가량
+    }
+
+    public boolean upgrade(float success) {
+        // 현재 강화 레벨이 최대 강화 레벨보다 높을 경우
+        if (!canUpgrade()) {
+            System.out.println("이미 최대 강화 레벨입니다.");
+            return false;
+        }
+
+        // 0.0 ~ 1.0 사이의 난수 생성
+        float random = (float) Math.random();
+        if (random < success) {
+            this.upgradeLavel++; // 현재 강화레벨 + 1
+            updateStats(); // 강화 성공시 스탯 갱신
+            System.out.println("강화 성공! 현재 강화 레벨 : " + this.upgradeLavel);
+            return true;
+        }
+        else {
+            System.out.println("강화 실패...");
+            return false;
+        }
+    }
 }
