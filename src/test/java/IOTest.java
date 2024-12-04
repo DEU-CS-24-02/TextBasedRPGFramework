@@ -1,8 +1,16 @@
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.biryeongtrain.text_emulator.Main;
+import net.biryeongtrain.text_emulator.io.LoadManager;
+import net.biryeongtrain.text_emulator.io.storage.ScenarioPath;
+import net.biryeongtrain.text_emulator.item.Item;
 import net.biryeongtrain.text_emulator.item.ItemStack;
 import net.biryeongtrain.text_emulator.item.Items;
+import net.biryeongtrain.text_emulator.scenario.ScenarioMeta;
 import net.biryeongtrain.text_emulator.utils.Util;
+import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -40,4 +49,52 @@ public class IOTest {
         Util.shutdownExecutors();
     }
 
+    @Test
+    @DisplayName("PathTest2")
+    public void pathTest2() throws ExecutionException, InterruptedException {
+        Path path = Path.of("./scenarios/bbb/scenario.json");
+        Path path2 = Path.of("./scenarios/ccc/scenario.json");
+        Path path3 = Path.of("./scenarios/aaa/scenario.json");
+        ScenarioMeta meta = new ScenarioMeta("테스트 시나리오", "test_scenario", "1.0.0", "테스트 시나리오입니다.", List.of("biryeongtrain"), List.of("test_scenario2"));
+        ScenarioMeta meta2 = new ScenarioMeta("테스트 시나리오2", "test_scenario2", "1.0.0", "테스트 시나리오입니다.", List.of("biryeongtrain"), List.of());
+        ScenarioMeta meta3 = new ScenarioMeta(
+                "테스트 시나리오3",
+                "test_scenario3",
+                "1.0.0",
+                "테스트 시나리오입니다.",
+                List.of("biryeongtrain"),
+                List.of("test_scenario2", "test_scenario")
+        );
+        JsonElement json = ScenarioMeta.CODEC.encodeStart(JsonOps.INSTANCE, meta).result().get();
+        JsonElement json2 = ScenarioMeta.CODEC.encodeStart(JsonOps.INSTANCE, meta2).result().get();
+        JsonElement json3 = ScenarioMeta.CODEC.encodeStart(JsonOps.INSTANCE, meta3).result().get();
+
+        var manager = new LoadManager();
+        try {
+            Files.createDirectories(path.getParent());
+            if (!Files.exists(path)) {
+                Files.createDirectories(path.getParent());
+                Files.writeString(path, json.toString(), StandardCharsets.UTF_8);
+            }
+            if (!Files.exists(path2)) {
+                Files.createDirectories(path2.getParent());
+                Files.writeString(path2, json2.toString(), StandardCharsets.UTF_8);
+            }
+            if (!Files.exists(path3)) {
+                Files.createDirectories(path3.getParent());
+                Files.writeString(path3, json3.toString(), StandardCharsets.UTF_8);
+            }
+            var itemPath = ScenarioPath.getPath(path.getParent(), ScenarioPath.ITEM);
+            if (!Files.exists(itemPath)) {
+                Files.createDirectories(itemPath);
+                Item item = new Item(new Item.Settings());
+                var itemJson = Item.CODEC.encodeStart(JsonOps.INSTANCE, item).result().get();
+                itemJson.getAsJsonObject().addProperty("id", Identifier.ofDefault("test_item").toString());
+                Files.writeString(itemPath.resolve("test_item.json"), itemJson.toString(), StandardCharsets.UTF_8);
+            }
+            manager.load();
+        } catch (IOException e) {
+            Assertions.fail(e);
+        }
+    }
 }
