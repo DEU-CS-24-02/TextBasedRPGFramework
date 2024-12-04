@@ -1,5 +1,7 @@
 package net.biryeongtrain.text_emulator.io.storage;
 
+import java.nio.file.Path;
+
 public class ScenarioPath {
     public static final ScenarioPath ROOT = new ScenarioPath(".");
     public static final ScenarioPath SCENE = new ScenarioPath("scene");
@@ -20,5 +22,9 @@ public class ScenarioPath {
     @Override
     public String toString() {
         return "/" + this.relativePath;
+    }
+
+    public static Path getPath(Path root, ScenarioPath path) {
+        return root.resolve(path.relativePath);
     }
 }
