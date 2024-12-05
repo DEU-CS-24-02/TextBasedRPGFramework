@@ -19,7 +19,7 @@ import java.nio.file.Path;
 public class ItemLoader implements ContentsLoader<Item> {
 
     @Override
-    public void loadData(Path path) {
+    public boolean loadData(Path path) {
         ItemComponents.load(); // TODO Relocate
         var itemRootPath = ScenarioPath.getPath(path, ScenarioPath.ITEM);
         if (Files.exists(itemRootPath)) {
@@ -29,21 +29,24 @@ public class ItemLoader implements ContentsLoader<Item> {
                         .forEach(itemFile -> {
                     try {
                         var dataString = Files.readString(itemFile);
-                        JsonObject json = (JsonObject) JsonParser.parseString(dataString);
+                        JsonObject json = JsonParser.parseString(dataString).getAsJsonObject();
                         var dataResult = Item.CODEC.decode(JsonOps.INSTANCE, json);
                         var itemPair = dataResult.getOrThrow();
                         Identifier id = Identifier.of(json.get("id").getAsString());
-                        Registry.register(Registries.ITEM, id, itemPair.getFirst());
+                        Registry.register(getRegistry(), id, itemPair.getFirst());
 
                         Main.LOGGER.info("  - Loaded item: {}", id);
+
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        Main.LOGGER.error("Failed to load item: {}", itemFile);
                     }
                 });
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                Main.LOGGER.error("Failed to load item path: {}", itemRootPath);
+                return false;
             }
         }
+        return true;
     }
 
     @Override
