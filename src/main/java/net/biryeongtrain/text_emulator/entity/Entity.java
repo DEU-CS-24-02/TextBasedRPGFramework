@@ -6,15 +6,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.biryeongtrain.text_emulator.entity.damage.DamageType;
 import net.biryeongtrain.text_emulator.io.Serializable;
 import net.biryeongtrain.text_emulator.registry.Registries;
-import net.biryeongtrain.text_emulator.registry.RegistryKey;
-import net.biryeongtrain.text_emulator.registry.RegistryKeys;
-
-import java.util.Objects;
 
 public class Entity implements Serializable<Entity> {
     public static Codec<Entity> CODEC = Codec.lazyInitialized(
             () -> RecordCodecBuilder.create(instance -> instance.group(
-                    RegistryKey.createCodec(RegistryKeys.ENTITY_TYPE).fieldOf("type").forGetter(entity -> entity.type.getKey()),
+                    Registries.ENTITY_TYPE.getCodec().fieldOf("type").forGetter(Entity::getType),
                     Codec.FLOAT.fieldOf("health").forGetter(Entity::getHealth),
                     Codec.FLOAT.fieldOf("armor").forGetter(Entity::getArmor),
                     Codec.FLOAT.fieldOf("damage").forGetter(Entity::getDamage)
@@ -32,8 +28,8 @@ public class Entity implements Serializable<Entity> {
         this.armor = type.getDefaultArmor();
         this.damage = type.getDefaultDamage();
     }
-    private Entity(RegistryKey<EntityType> type, float health, float armor, float damage) {
-        this.type = Objects.requireNonNull(Registries.ENTITY_TYPE.get(type));
+    private Entity(EntityType type, float health, float armor, float damage) {
+        this.type = type;
         this.health = health;
         this.armor = armor;
         this.damage = damage;
