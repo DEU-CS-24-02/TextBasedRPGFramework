@@ -1,7 +1,7 @@
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import net.biryeongtrain.text_emulator.Main;
+import net.biryeongtrain.text_emulator.entity.EntityTag;
 import net.biryeongtrain.text_emulator.io.LoadManager;
 import net.biryeongtrain.text_emulator.io.storage.ScenarioPath;
 import net.biryeongtrain.text_emulator.item.Item;
@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -55,6 +56,7 @@ public class IOTest {
         Path path = Path.of("./scenarios/bbb/scenario.json");
         Path path2 = Path.of("./scenarios/ccc/scenario.json");
         Path path3 = Path.of("./scenarios/aaa/scenario.json");
+        Path entityTagPath = path.getParent().resolve("entity_tag/test_tag.json");
         ScenarioMeta meta = new ScenarioMeta("테스트 시나리오", "test_scenario", "1.0.0", "테스트 시나리오입니다.", List.of("biryeongtrain"), List.of("test_scenario2"));
         ScenarioMeta meta2 = new ScenarioMeta("테스트 시나리오2", "test_scenario2", "1.0.0", "테스트 시나리오입니다.", List.of("biryeongtrain"), List.of());
         ScenarioMeta meta3 = new ScenarioMeta(
@@ -92,7 +94,16 @@ public class IOTest {
                 itemJson.getAsJsonObject().addProperty("id", Identifier.ofDefault("test_item").toString());
                 Files.writeString(itemPath.resolve("test_item.json"), itemJson.toString(), StandardCharsets.UTF_8);
             }
-            manager.load();
+
+            if (!Files.exists(entityTagPath)) {
+                Files.createDirectories(entityTagPath.getParent());
+                EntityTag tag = new EntityTag("TestTag", Identifier.ofDefault("test_tag"), EntityTag.Type.ENTITY);
+                var tagJson = EntityTag.IO_CODEC.encodeStart(JsonOps.INSTANCE, tag).getOrThrow();
+                Files.writeString(entityTagPath, tagJson.toString());
+            }
+            CompletableFuture<Void> task = CompletableFuture.runAsync(manager::load, Util.IOExecutor);
+            task.get();
+            Main.LOGGER.info("DONE!");
         } catch (IOException e) {
             Assertions.fail(e);
         }
