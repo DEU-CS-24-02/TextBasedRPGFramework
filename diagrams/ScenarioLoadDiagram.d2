@@ -1,0 +1,35 @@
+BootStrap: {
+    shape: "sequence_diagram"
+
+    main: Main
+
+    io: I/O Thread
+    sloader: Scenario Loader
+    main.t1 -> io.t1: load saveFiles
+    io.t1 -> main.t1: send success / failure {
+        style.stroke-dash: 5
+    }
+    main.t1 -> main.t1: validate SaveFiles
+
+    main.t1 -> io.t2: send load scenarios
+    io.t2 -> sloader.t1: scan all directories in scenario folder
+    sloader.t1 -> io.t2: return all detected scenario.json files
+    io.t2 -> main.t2: return detected all scenraio for validate with save
+    io.t2 -> io.t2: sleep until main's call
+    main.t2 -> main.t2: throw error if there's no required scenario in save path
+
+    main.t3 -> main.t3: sort scenario load priority using scenario information (dependency)
+    main.t3 -> io.t3: send load all scenario call
+    io.t3 -> sloader.t2: load scenario one-by-one
+    sloader.t3 -> io.t3: send loaded scenario elements
+}
+
+LoadRoutin: {
+    LoaderManager -> ItemLoader: load Items
+    ItemLoader -> EntityTagLoader: load Entity Tags
+    EntityTagLoader -> EntityLoader: load entity and throw exception if no required item / tag loaded
+    EntityLoader -> SceneLoader: load scene and throw exception if no required entity / item
+}
+
+BootStrap.sloader.t2 -> LoadRoutin
+LoadRoutin -> BootStrap.sloader.t3: send result

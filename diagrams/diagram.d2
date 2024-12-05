@@ -1,0 +1,153 @@
+# Bootstrap: {
+#   IoThread: {
+#     LoadManager -> ScenarioLoader: load each scenario using formatted json
+#     ScenarioLoader -> ItemLoader
+#     ItemLoader -> EntityTagLoader
+#     EntityTagLoader -> EntityLoader
+#     EntityLoader -> SceneLoader
+#     SceneLoader -> canLoadFiles
+#     canLoadFiles -> checkIfRemainingScenario
+#     canLoadFiles -> throw Error: if not
+#     checkIfRemainingScenario -> ScenarioLoader
+#   }
+
+# MainThread
+
+# MainThread -> IoThread: read files
+# }
+Entity: {
+    shape: class
+- Inventory: "DefaultedList<ItemStack>"
+- Health: float
+- Armor: "float"
+- AttackDamage: "float"
++ CODEC: "Codec<Entity>"
+
++ getHealth(): float
++ getArmor(): float
++ getAttackDamage(): float
++ getSlots(): Map<Slot, ItemStack>
++ getSlotItem(Slot slot): "@Nullable ItemStack"
++ getAllSlotStat(Component component): float
++ getSlotStat(Slot slot, Component component): float
++ getInventory(): "Inventory"
+}
+
+Item: {
+shape: class
+- components: ComponentMap
++ Item(Settings settings)
++ getId(Item item): Identifier
++ getComponents(): ComponentMap
++ getMaxCount(): int
+}
+
+Item Settings: {
+shape: class
+- components: "@Nullable ComponentMap.Builder"
++ component(ItemComponent\<T\> type, T value): Settings
++ setMaxCount(int maxCount): Settings
++ getComponents(): ComponentMap
++ getValidateComponents(): ComponentMap
+}
+
+Inventory: {
+shape: class
++ size(): int
++ isEmpty(): boolean
++ getStack(int slot): ItemStack
++ removeStack(int slot): ItemStack
++ removeStack(int slot, int amount): ItemStack
++ setStack(int slot, ItemStack stack): void
++ getMaxCountPerStack(): int
++ getMaxCount(ItemStack stack): int
++ isValid(int slot, ItemStack stack): boolean
++ count(Item item): int
++ containsAny(Set\<ItemStack\> items): boolean
++ containsAny(Predicate\<ItemStack\> predicate): boolean
+}
+
+ItemStack: {
+shape: class
+- base: Item
+- components: ComponentMapImpl
+- count: int
+
++ ItemStack(Item item)
++ ItemStack(Item item, int count)
+
++ isEmpty(): boolean
++ getItem(): Item
++ getCount(): int
++ getComponents(): ComponentMap
++ getEquipmentValue(Slot slot): float
++ getMaxCount(): int
+
++ isOf(Item item): boolean
++ isSameStack(ItemStack other): boolean
++ isEquipable(): boolean
+
++ set(ItemComponent\<T\> type, T value): void
++ shrink(): void
++ setCount(int i): void
+}
+
+ComponentHolder: {
+shape: class
++ getComponents(): ComponentMap
+}
+
+Entity -> Inventory: "getInventory" {
+target-arrowhead.shape: triangle
+target-arrowhead.style.filled: false
+}
+
+Item -> Item Settings: construct arg {
+source-arrowhead: "*"
+target-arrowhead: 1
+}
+
+Player: {
+shape: class
+}
+
+Scene: {
+shape: class
+- final id: Identifier
+- entityContainer: List<Entity>
+- final condition: SceneCondition
+- isPlayed: boolean
+- decisions: List<SceneDecision>
+
++ damagePlayer(float amount): void
++ damageEntity(Entity entity, int amount): void
++ getPlayer(): Player
++ onPlayerSelectChoice(int index): ActionResult
++ onSceneEnd(Player player): void
++ getSceneCondition: SceneCondition
+}
+
+GameManager: {
+shape: class
+- player: Player
+- currentScene: Scene
+
++ givePlayerItem(Item item): void
++ givePlayerItem(ItemStack itemStack): void
++ getNextScene(): Scene
++ getPossibleScenes(): Set<Scene>
++ getSceneById(Identifier id): Scene
++ damagePlayer(int value)
++ save()
++ load()
+}
+
+# Inventory -- ItemStack: holder
+Item -- ItemStack: instance
+ItemStack -> ComponentHolder: holder
+Item -> ComponentHolder: holder
+Entity -> Player: implementation
+# Scene -> Player: args
+# Item Settings -> ComponentHolder
+# Scene -> Entity
+GameManager -- Scene
