@@ -77,7 +77,7 @@ public class ConditionalTextRPG extends JFrame {
     // 다음 씬으로 이동
     private void moveToNextScene() {
         if (!nextButton.isEnabled()) {
-            return; // 버튼이 이미 비활성화된 경우 실행하지 않음
+            return;
         }
 
         Scene scene = scenes.get(currentScene);
