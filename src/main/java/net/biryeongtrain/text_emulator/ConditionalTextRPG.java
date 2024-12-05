@@ -37,7 +37,7 @@ public class ConditionalTextRPG extends JFrame {
         inventory = new HashSet<>(); // 플레이어의 아이템 목록
         visitedRandomScenes = new HashSet<>(); // 방문한 랜덤 씬 목록
         initializeScenes();
-        currentScene = "start"; // 첫 번째 씬 설정
+        currentScene = "start";
 
         // 첫 번째 씬 출력
         displayTextWithEffect(scenes.get(currentScene).getDescription());
