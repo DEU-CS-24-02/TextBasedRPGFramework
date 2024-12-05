@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.entity.Player;
 import net.biryeongtrain.text_emulator.entity.Slot;
 import net.biryeongtrain.text_emulator.io.Serializable;
 import net.biryeongtrain.text_emulator.item.component.ComponentChanges;
@@ -231,8 +232,8 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
 
     // 소모성 아이템 사용 메서드
     public boolean Use(Player player) {
-        Float healAmount = this.get(ItemComponents.HEAL_AMOUNT);
-        if (healAmount != null && healAmount > 0) { // healAmount가 있는 경우에만 체력 회복
+        float healAmount = this.getOrDefault(ItemComponents.HEAL_AMOUNT, 0f);
+        if (healAmount > 0) { // healAmount가 있는 경우에만 체력 회복
             player.heal(healAmount); // 플레이어 체력 회복
             this.shrink(); // 아이템 사용 후 수량 감소
             return true;

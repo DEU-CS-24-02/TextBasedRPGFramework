@@ -59,6 +59,10 @@ public class Entity implements Serializable<Entity> {
         // TODO: 2024-11-21 Implement death
     }
 
+    public void heal(float amount) {
+
+    }
+
     @Override
     public Codec<Entity> getCodec() {
         return null;
