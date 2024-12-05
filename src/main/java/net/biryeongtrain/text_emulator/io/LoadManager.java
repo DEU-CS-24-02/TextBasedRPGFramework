@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.biryeongtrain.text_emulator.Main;
 import net.biryeongtrain.text_emulator.io.loader.ContentsLoader;
 import net.biryeongtrain.text_emulator.io.loader.EntityTagLoader;
+import net.biryeongtrain.text_emulator.io.loader.EntityTypeLoader;
 import net.biryeongtrain.text_emulator.io.loader.ItemLoader;
 import net.biryeongtrain.text_emulator.scenario.ScenarioMeta;
 
@@ -30,6 +31,7 @@ public class LoadManager {
     public LoadManager() {
         LOADERS.add(new ItemLoader());
         LOADERS.add(new EntityTagLoader());
+        LOADERS.add(new EntityTypeLoader());
     }
 
     /**

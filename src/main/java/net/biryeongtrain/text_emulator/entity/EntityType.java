@@ -55,7 +55,7 @@ public class EntityType {
         return key;
     }
 
-    private EntityType(Identifier key, float defaultHealth, float defaultDamage, float defaultArmor, LootTableManager lootTableManager, List<EntityTag> tags) {
+    public EntityType(Identifier key, float defaultHealth, float defaultDamage, float defaultArmor, LootTableManager lootTableManager, List<EntityTag> tags) {
         this.key = key;
         this.defaultHealth = defaultHealth;
         this.defaultDamage = defaultDamage;
