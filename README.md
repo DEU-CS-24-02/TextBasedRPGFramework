@@ -8,6 +8,19 @@ Text4Adventure은 자바로 제작된 텍스트 기반 RPG 프레임워크입니
 - 대부분의 데이터가 시나리오를 이용하여 쉽게 추가, 제거 할 수 있습니다.
 - 여러개의 시나리오를 묶어 한번에 실행 가능합니다.
 
+<h2>Scenario.json </h2>
+```json
+{
+  "scenario-id" : "my_scenario",
+  "name" : "나만의 시나리오",
+  "version" : "1.0",
+  "description" : "나만의 시나리오를 만들어보세요.",
+  "dependencies" : [
+    "my_other_scenario"
+  ]
+}
+```
+
 <h2>씬(Scene) 제작 방법</h2>
 
 Scene은 시나리오의 요소 중 하나로, 텍스트가 표시되는 각 장을 뜻합니다. 이 씬들이 모여 시나리오를 구성하며, 씬은 엔티티, 플레이어, 아이템을 관리하고 구성 할 수 있습니다.

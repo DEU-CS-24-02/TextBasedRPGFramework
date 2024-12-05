@@ -3,16 +3,23 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.entity.Slot;
+import net.biryeongtrain.text_emulator.item.ItemStack;
+import net.biryeongtrain.text_emulator.item.Items;
 import net.biryeongtrain.text_emulator.item.component.ComponentMap;
 import net.biryeongtrain.text_emulator.item.component.ComponentMapImpl;
 import net.biryeongtrain.text_emulator.item.component.type.Consumable;
-import net.biryeongtrain.text_emulator.item.component.type.ItemComponents;
+import net.biryeongtrain.text_emulator.item.component.ItemComponents;
+import net.biryeongtrain.text_emulator.item.component.type.Rarity;
+import net.biryeongtrain.text_emulator.item.component.type.SlotInstance;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static net.biryeongtrain.text_emulator.Main.LOGGER;
@@ -203,5 +210,32 @@ public class TestMain {
         public int getI() {
             return i;
         }
+    }
+
+    @Test
+    @DisplayName("ItemStack Codec Check")
+    public void testItemStackCodec() {
+        ItemStack stack = new ItemStack(Items.TEST_ITEM);
+
+        stack.setCount(10);
+        stack.set(ItemComponents.RARITY, Rarity.RARE);
+        List<SlotInstance> list = new ArrayList<>();
+        list.add(new SlotInstance(Slot.HEAD, 10F));
+        stack.set(ItemComponents.SLOT_INSTANCE, list);
+
+        var result = ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, stack);
+        result.ifError(e -> Assertions.fail(e.message()));
+
+        var json = result.result().orElseThrow(() -> new RuntimeException("ItemStack is Empty. Maybe can not decode stack?"));
+
+        LOGGER.info("stack decoded : {}", json);
+
+        var decodeResult = ItemStack.CODEC.decode(JsonOps.INSTANCE, json);
+        decodeResult.ifError(e -> Assertions.fail(e.message()));
+
+        var pair = decodeResult.result().orElseThrow(() -> new RuntimeException("ItemStack is Empty. Maybe can not decode stack?"));
+        var decodedStack = pair.getFirst();
+
+        Assertions.assertTrue(stack.isSameStack(decodedStack));
     }
 }
