@@ -2,6 +2,7 @@ package net.biryeongtrain.text_emulator.utils;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.biryeongtrain.text_emulator.Main;
 import net.biryeongtrain.text_emulator.registry.Registry;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 import org.slf4j.Logger;
@@ -68,6 +69,7 @@ public class Util {
     }
 
     public static void shutdownExecutors() {
+        Main.LOGGER.info("Shutting down executors"  );
         IOExecutor.shutdownNow();
     }
 }
