@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.biryeongtrain.text_emulator.Main;
 import net.biryeongtrain.text_emulator.io.loader.ContentsLoader;
+import net.biryeongtrain.text_emulator.io.loader.EntityTagLoader;
 import net.biryeongtrain.text_emulator.io.loader.ItemLoader;
 import net.biryeongtrain.text_emulator.scenario.ScenarioMeta;
 
@@ -17,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LoadManager {
     private final Set<ContentsLoader<?>> LOADERS = new ObjectArraySet<>();
@@ -29,7 +29,7 @@ public class LoadManager {
 
     public LoadManager() {
         LOADERS.add(new ItemLoader());
-
+        LOADERS.add(new EntityTagLoader());
     }
 
     /**
@@ -41,12 +41,17 @@ public class LoadManager {
             loadAndValidateAllScenarioMeta();
             sortScenarioMeta();
 
-            sortedScenarios.forEach(pair -> {
+            for (Pair<ScenarioMeta, Path> pair : sortedScenarios) {
+                boolean bl1 = true;
                 Main.LOGGER.info("- {}", pair.first().id());
-                this.LOADERS.forEach(loader -> {
-                    loader.loadData(pair.second());
-                });
-            });
+                for (ContentsLoader<?> loader : this.LOADERS) {
+                    // skip if load fails for any reason
+                    if (!bl1|| !loader.loadData(pair.second())) {
+                        Main.LOGGER.error("Failed to load data for {}", pair.first().id());
+                        bl1 = false;
+                    }
+                }
+            }
         } catch (IOException e) {
             // TODO Implement error handling
             throw new RuntimeException(e);
@@ -164,9 +169,5 @@ public class LoadManager {
 
     public synchronized void unloadAll() {
 
-    }
-
-    static {
-        // TODO : ADD LOADERS
     }
 }
