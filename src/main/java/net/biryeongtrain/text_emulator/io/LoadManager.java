@@ -48,7 +48,7 @@ public class LoadManager {
                 Main.LOGGER.info("- {}", pair.first().id());
                 for (ContentsLoader<?> loader : this.LOADERS) {
                     // skip if load fails for any reason
-                    if (!bl1|| !loader.loadData(pair.second())) {
+                    if (!bl1 || !loader.loadData(pair.second())) {
                         Main.LOGGER.error("Failed to load data for {}", pair.first().id());
                         bl1 = false;
                     }
@@ -65,30 +65,32 @@ public class LoadManager {
             if (Files.isDirectory(SCENARIO_ROOT)) {
                 Files.list(SCENARIO_ROOT).forEach(path -> {
                     if (Files.isDirectory(path)) {
-                        var scenarioFile = path.resolve("scenario.json");
-                        if (Files.exists(scenarioFile)) {
-                            Main.LOGGER.info("Loading scenario : {}", path.getFileName());
-                            try {
-                                var string = Files.readString(scenarioFile);
-                                var json = JsonParser.parseString(string);
-                                var result = ScenarioMeta.CODEC.decode(JsonOps.INSTANCE, json);
+                        return;
+                    }
+                    var scenarioFile = path.resolve("scenario.json");
+                    if (!Files.exists(scenarioFile)) {
+                        return;
+                    }
+                    Main.LOGGER.info("Loading scenario : {}", path.getFileName());
+                    try {
+                        var string = Files.readString(scenarioFile);
+                        var json = JsonParser.parseString(string);
+                        var result = ScenarioMeta.CODEC.decode(JsonOps.INSTANCE, json);
 
-                                if (result.isError()) {
-                                    Main.LOGGER.error("Can not decode scenario data file {}. skipping...", scenarioFile.getFileName());
-                                    return;
-                                }
-
-                                var pair = result.getOrThrow();
-                                var meta = pair.getFirst();
-                                if (meta != null) {
-                                    Pair<ScenarioMeta, Path> pair1 = Pair.of(meta, path);
-                                    this.notSortedScenarios.add(pair1);
-                                    this.string2Meta.put(meta.id(), pair1);
-                                }
-                            } catch (IOException e) {
-                                Main.LOGGER.error("Can not read scenario data file {}. skipping... {}", path, e.getMessage());
-                            }
+                        if (result.isError()) {
+                            Main.LOGGER.error("Can not decode scenario data file {}. skipping...", scenarioFile.getFileName());
+                            return;
                         }
+
+                        var pair = result.getOrThrow();
+                        var meta = pair.getFirst();
+                        if (meta != null) {
+                            Pair<ScenarioMeta, Path> pair1 = Pair.of(meta, path);
+                            this.notSortedScenarios.add(pair1);
+                            this.string2Meta.put(meta.id(), pair1);
+                        }
+                    } catch (IOException e) {
+                        Main.LOGGER.error("Can not read scenario data file {}. skipping... {}", path, e.getMessage());
                     }
                 });
 
@@ -111,34 +113,7 @@ public class LoadManager {
     }
 
     public void sortScenarioMeta() {
-//        this.notSortedScenarios.forEach(metaPair -> {
-//            if (sortedScenarios.contains(Pair.of(metaPair.first(), metaPair.second()))) {
-//                // it will skip because already sorted.
-//                return;
-//            }
-//            var meta = metaPair.first();
-//            if (meta.dependencies() == null || meta.dependencies().isEmpty()) {
-//                this.sortedScenarios.add(metaPair);
-//                return;
-//            }
-//
-//            boolean isDependencyLoaded = checkDependencyLoaded(meta);
-//            if (!isDependencyLoaded) {
-//                Main.LOGGER.warn("Scenario {} does not contain its dependencies : {}", metaPair.first(), meta.dependencies());
-//                return;
-//            }
-//
-//            this.sortedScenarios.add(metaPair);
-//        });
         this.notSortedScenarios.forEach(this::loadMeta);
-    }
-
-    private boolean checkDependencyLoaded(ScenarioMeta meta) {
-        if (meta.dependencies() == null || meta.dependencies().isEmpty()) {
-            return true;
-        }
-
-        return meta.dependencies().stream().allMatch(string2Meta::containsKey);
     }
 
     private boolean loadMeta(Pair<ScenarioMeta, Path> pair) {
@@ -163,10 +138,6 @@ public class LoadManager {
         }
         this.sortedScenarios.add(pair);
         return true;
-    }
-
-    public boolean hasDependencies(ScenarioMeta meta) {
-        return false;
     }
 
     public synchronized void unloadAll() {

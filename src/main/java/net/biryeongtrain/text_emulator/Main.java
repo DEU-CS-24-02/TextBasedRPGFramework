@@ -1,6 +1,7 @@
 package net.biryeongtrain.text_emulator;
 
 import net.biryeongtrain.text_emulator.io.LoadManager;
+import net.biryeongtrain.text_emulator.swing.SimpleTextRPG;
 import net.biryeongtrain.text_emulator.utils.LogUtils;
 import net.biryeongtrain.text_emulator.utils.Util;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ public class Main {
         while(!future.isDone()) {
             // TODO : Add loading animation
         }
+
+        new SimpleTextRPG();
 
         Util.shutdownExecutors();
         Main.LOGGER.info("Done!");
