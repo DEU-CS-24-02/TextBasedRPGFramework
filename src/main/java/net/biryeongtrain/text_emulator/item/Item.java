@@ -2,6 +2,8 @@ package net.biryeongtrain.text_emulator.item;
 
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.biryeongtrain.text_emulator.item.component.ComponentMap;
 import net.biryeongtrain.text_emulator.item.component.ItemComponent;
 import net.biryeongtrain.text_emulator.item.component.ItemComponents;
@@ -19,7 +21,17 @@ import org.jetbrains.annotations.Nullable;
  */
 
 public class Item {
+    /**
+     * DO NOT USE IF YOU ARE NOT USING IN I/O
+     */
+    public static final Codec<Item> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ComponentMap.CODEC.fieldOf("components").forGetter(Item::getComponents)
+    ).apply(instance, Item::new));
     private final ComponentMap components;
+
+    private Item(ComponentMap components) {
+        this.components = components;
+    }
 
     public Item(Settings settings) {
         this.components = settings.getValidateComponents();

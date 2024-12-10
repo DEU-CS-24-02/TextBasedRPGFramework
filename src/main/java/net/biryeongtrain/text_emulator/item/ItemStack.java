@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.entity.Player;
 import net.biryeongtrain.text_emulator.entity.Slot;
 import net.biryeongtrain.text_emulator.io.Serializable;
 import net.biryeongtrain.text_emulator.item.component.ComponentChanges;
@@ -15,6 +16,9 @@ import net.biryeongtrain.text_emulator.item.component.type.SlotInstance;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.utils.Codecs;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 아이템의 실제 인스턴스인 ItemStack 입니다.
@@ -38,6 +42,9 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
     final ComponentMapImpl components;
     private int count;
 
+    private int upgradeLavel; //현재 강화 레벨
+    private int maxupgradeLevel = 5; // 최대 강화 레벨
+
     public ItemStack(Item item) {
         this(item, 1);
     }
@@ -50,6 +57,11 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
         this.base = item;
         this.count = count;
         this.components = components;
+
+    }
+
+    public boolean canUpgrade() {
+        return this.upgradeLavel < this.maxupgradeLevel; // 현재 레벨이 최대 강화 레벨보다 낮아야 강화 가능
     }
 
     private ItemStack(Item item, int count, ComponentChanges changes) {
@@ -83,6 +95,8 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
     public int getCount() {
         return this.count;
     }
+
+    public int getUpgradeLavel() { return this.upgradeLavel; }
 
     /**
      * 해당 ItemStack 이 Item 인스턴스와 같은지 확인합니다.
@@ -149,6 +163,82 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
 
     public void equip(Slot slot) {
         // TODO : EQUIP LOGIC
+    }
+
+    // 아이템 쿨타임 관련 메서드
+    public boolean canUse(int currentTurn) {
+        int lastUsedTurn = this.getOrDefault(ItemComponents.LAST_USED_TURN, -1); // 아이템이 마지막으로 사용된 턴 정보
+        int cooldown = this.getOrDefault(ItemComponents.COOLDOWN, 0); // 아이템 쿨타임 정보
+        return currentTurn > lastUsedTurn + cooldown; // 현재 턴이 마지막 턴 + 쿨타임보다 큰지 확인하여 아이템 사용 가능 여부 확인
+    }
+
+    public boolean useWithCooldown(int currentTurn) {
+        if (!canUse(currentTurn)) {
+            return false; // 쿨타임이 끝나지 않았으면 false를 반환 합니다.
+        }
+        this.set(ItemComponents.LAST_USED_TURN, currentTurn);
+        return true;
+    }
+
+    // 아이템 강화 관련 메서드
+    private void updateStats() {
+
+        float damageBase = this.getOrDefault(ItemComponents.DAMAGE, 0.0f);
+        float armorBase = this.getOrDefault(ItemComponents.ARMOR, 0.0f);
+
+        this.set(ItemComponents.DAMAGE, damageBase + (this.upgradeLavel * 2.0f)); // 공격력 증가량
+        this.set(ItemComponents.ARMOR, armorBase + (this.upgradeLavel * 1.0f)); // 방어력 증가량
+    }
+
+    public boolean upgrade(float success) {
+        // 현재 강화 레벨이 최대 강화 레벨보다 높을 경우
+        if (!canUpgrade()) {
+            System.out.println("이미 최대 강화 레벨입니다.");
+            return false;
+        }
+
+        // 0.0 ~ 1.0 사이의 난수 생성
+        float random = (float) Math.random();
+        if (random < success) {
+            this.upgradeLavel++; // 현재 강화레벨 + 1
+            updateStats(); // 강화 성공시 스탯 갱신
+            System.out.println("강화 성공! 현재 강화 레벨 : " + this.upgradeLavel);
+            return true;
+        }
+        else {
+            System.out.println("강화 실패...");
+            return false;
+        }
+    }
+
+    // 아이템 판매 메서드
+    public int sellItem(Player player) {
+        if (this.isEmpty()) { // 아이템 스텍이 존재하지 않을 경우
+            throw new IllegalStateException("판매할 아이템이 존재하지 않습니다.");
+        }
+
+        int basePrice = this.getOrDefault(ItemComponents.PRICE,0); // 기본 판매 가격 불러오기
+
+        int upgradePrice = Math.round(basePrice * 0.15f * this.upgradeLavel); // 강화 레벨 +1당 15% 가격 추가
+
+        int totalPrice = basePrice + upgradePrice; // 최종 가격 = 기본 가격 + 강화당 증가 가격
+
+        player.addGold(totalPrice); // 플레이어에게 판매한 돈 지급
+
+        this.shrink(); // 아이템 수량 감소
+
+        return totalPrice; // 최종가격 반환
+    }
+
+    // 소모성 아이템 사용 메서드
+    public boolean Use(Player player) {
+        Float healAmount = this.get(ItemComponents.HEAL_AMOUNT);
+        if (healAmount != null && healAmount > 0) { // healAmount가 있는 경우에만 체력 회복
+            player.heal(healAmount); // 플레이어 체력 회복
+            this.shrink(); // 아이템 사용 후 수량 감소
+            return true;
+        }
+        return false;
     }
 
 }

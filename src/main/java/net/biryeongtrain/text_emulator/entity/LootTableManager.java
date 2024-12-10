@@ -14,7 +14,7 @@ public class LootTableManager {
     ).apply(instance, LootTableManager::new)));
     private final List<LootTableInstance> lootTables = new ArrayList<>();
     private int totalWeight;
-    private LootTableManager(List<LootTableInstance> lootTables) {
+    public LootTableManager(List<LootTableInstance> lootTables) {
         this.lootTables.addAll(lootTables);
         totalWeight = lootTables.stream().mapToInt(LootTableInstance::weight).sum();
     }
