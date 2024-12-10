@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.entity.Player;
+import net.biryeongtrain.text_emulator.level.scene.Condition;
 import net.biryeongtrain.text_emulator.level.scene.SceneDecision;
 import net.biryeongtrain.text_emulator.level.scene.SceneSelector;
 import net.biryeongtrain.text_emulator.utils.collections.DefaultedList;
@@ -45,6 +47,9 @@ public final class Scene {
     private SceneSelector selector() {
         return selector;
     }
+    public boolean isAlways() {
+        return this.selector.condition() == Condition.ALWAYS;
+    }
 
     private List<Pair<Integer,String>> conversations() {
         return ImmutableList.copyOf(conversations);
@@ -54,12 +59,16 @@ public final class Scene {
         return conversationArrayList.get(index);
     }
 
+    public ImmutableList<String> getConversations() {
+        return ImmutableList.copyOf(this.conversationArrayList);
+    }
+
     public List<SceneDecision> decision() {
         return decision;
     }
 
-    public boolean canSelected() {
-        return selector.checkCondition();
+    public boolean canSelected(Player player) {
+        return selector.checkCondition(player);
     }
 
     @Override

@@ -3,6 +3,7 @@ package net.biryeongtrain.text_emulator.level.scene;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.entity.Player;
 
 public record SceneSelector(Condition condition,
                             Operator operator,
@@ -19,7 +20,7 @@ public record SceneSelector(Condition condition,
     ).apply(instance, SceneSelector::new));
 
 
-    public boolean checkCondition() {
+    public boolean checkCondition(Player player) {
         return true;
     }
 }

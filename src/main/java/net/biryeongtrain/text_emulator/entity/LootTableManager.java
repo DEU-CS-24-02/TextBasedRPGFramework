@@ -2,6 +2,7 @@ package net.biryeongtrain.text_emulator.entity;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.level.Scene;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class LootTableManager {
     }
 
     public LootTableInstance getLootTable(Scene scene) {
-        Random random = scene.getRandom();
+        var random = GameManager.getInstance().getRandom();
         int weight = random.nextInt(totalWeight);
         for (LootTableInstance lootTable : lootTables) {
             weight -= lootTable.weight();
