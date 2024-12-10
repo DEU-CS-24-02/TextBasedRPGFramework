@@ -1,8 +1,11 @@
 package net.biryeongtrain.text_emulator.entity;
 
-public class Player extends Entity{
-    public Player(EntityType type) {
-        super(type);
+import com.mojang.serialization.Codec;
+
+public class Player extends Entity {
+    public static Codec<Player> CODEC;
+    public Player() {
+        super(EntityTypes.PLAYER);
     }
 
     public void heal(float value) {
