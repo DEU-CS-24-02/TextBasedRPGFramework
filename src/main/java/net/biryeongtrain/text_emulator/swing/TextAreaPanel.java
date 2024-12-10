@@ -21,7 +21,8 @@ public class TextAreaPanel extends JPanel {
     public TextAreaPanel() {
         setLayout(new BorderLayout());
         textArea = new JTextArea();
-        textArea.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 20));
+        textArea.setBackground(new Color(0xF5F5DC));
         textArea.setEditable(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
