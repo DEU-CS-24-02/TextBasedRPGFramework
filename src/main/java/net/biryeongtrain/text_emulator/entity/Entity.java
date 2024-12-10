@@ -21,7 +21,7 @@ public class Entity implements Serializable<Entity> {
                     Codec.FLOAT.fieldOf("health").forGetter(Entity::getHealth),
                     Codec.FLOAT.fieldOf("armor").forGetter(Entity::getArmor),
                     Codec.FLOAT.fieldOf("damage").forGetter(Entity::getDamage)
-            ).apply(instance, Entity::new)) // Codec에서 사용할 메서드로 변경
+            ).apply(instance, Entity::new))
     );
 
     private final EntityType type;
@@ -48,9 +48,7 @@ public class Entity implements Serializable<Entity> {
     }
 
     // Codec에서 사용할 메서드
-    /**  private static Entity createFromCodec(RegistryKey<EntityType> typeKey, float health, float armor, float damage) {
-        TODO : Registries 클래스에 ENTITY_TYPE이 선언되어 있지 않아 수정하지 않음.
-         * FIXME : Modify after confirmation
+     private static Entity createFromCodec(RegistryKey<EntityType> typeKey, float health, float armor, float damage) {
         EntityType type = Objects.requireNonNull(Registries.ENTITY_TYPE.get(typeKey), "Invalid entity type key");
         Entity entity = new Entity(type);
         entity.health = health;
@@ -58,7 +56,7 @@ public class Entity implements Serializable<Entity> {
         entity.damage = damage;
         return entity;
     }
-     */
+
     // 나머지 메서드들
     public EntityType getType() {
         return type;

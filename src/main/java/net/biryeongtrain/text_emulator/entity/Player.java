@@ -1,21 +1,30 @@
 package net.biryeongtrain.text_emulator.entity;
 
 import net.biryeongtrain.text_emulator.item.ItemStack;
+import net.biryeongtrain.text_emulator.level.Scene;
+import net.biryeongtrain.text_emulator.registry.Registries;
+import net.biryeongtrain.text_emulator.registry.RegistryKey;
 import net.biryeongtrain.text_emulator.utils.Clearable;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class Player extends Entity implements Inventory, Clearable {
     private float gold; // 플레이어의 돈
     private float reputation; // 플레이어의 명성
+    private float health; // 플레이어의 체력
     private final ItemStack[] stacks; // 인벤토리 (아이템 스택 배열)
     private final int maxSize; // 인벤토리 최대 슬롯 수
+    private static final int DEFAULT_INVENTORY_SIZE = 30; // 기본 인벤토리 크기
 
-    public Player(EntityType type, int inventorySize) {
-        super(type); // Entity 클래스의 생성자 호출
+    // 기본 생성자
+    public Player(RegistryKey<EntityType> typeKey, LootTableManager lootTableManager, Scene scene) {
+        super(Registries.ENTITY_TYPE.get(typeKey), lootTableManager, scene); // Entity 생성자 호출
         this.gold = 0; // 초기 금액 설정
-        this.reputation = 0; // 초기 명성 설정 (기본적으로 0으로 설정)
-        this.maxSize = inventorySize; // 인벤토리 최대 슬롯 수 설정
+        this.reputation = 0; // 초기 명성 설정
+        this.health = 100; // 초기 체력 설정
+        this.maxSize = DEFAULT_INVENTORY_SIZE; // 기본 인벤토리 크기 설정
         this.stacks = new ItemStack[maxSize]; // 인벤토리 초기화
     }
 
@@ -118,14 +127,36 @@ public class Player extends Entity implements Inventory, Clearable {
         }
         stacks[slot] = stack; // 지정된 슬롯에 아이템 스택 설정
     }
+    public void dropItem(LootTableManager lootTableManager, Scene scene) {
+        // LootTableManager를 통해 적절한 LootTableInstance를 가져옴
+        LootTableInstance lootTable = lootTableManager.getLootTable(scene); // scene을 매개변수로 전달
 
-    /** TODO : 전리품(dropItem) 구현부 작성
-     *  public void dropItem(ItemStack itemStack) {
-     *         // 아이템 드롭 로직 구현
-     *         System.out.printf("%s을(를) 드롭했습니다. 수량: %d%n", itemStack.getItem().getId(), itemStack.getCount());
-     *         // 추가적인 드롭 처리 로직 (예: 씬에 아이템 추가 등)
-     *     }
-     */
+        // LootTableInstance에서 아이템 목록을 가져옴
+        List<ItemStack> items = lootTable.items();
+
+        // 아이템 목록에서 드롭할 아이템을 선택
+        if (!items.isEmpty()) {
+            // 랜덤으로 아이템 선택
+            Random random = scene.getRandom();
+            ItemStack droppedItem = items.get(random.nextInt(items.size())); // 랜덤으로 아이템 선택
+
+            // 아이템의 키를 가져옴
+            String itemKey = Registries.ITEM.getKey(droppedItem.getItem()).toString(); // 아이템의 키를 가져옴
+
+            // 아이템 드롭 처리 로직 (스윙에서 나타내야 하므로 출력하지 않음)
+            // 예: scene.addItem(droppedItem); // 아이템을 씬에 추가하는 로직 필요
+
+            // 드롭된 아이템의 키를 사용하여 다른 로직을 구현할 수 있습니다.
+            // 필요에 따라 itemKey를 활용할 수 있습니다.
+        } else {
+            // 드롭할 아이템이 없을 경우 처리 (출력하지 않음)
+        }
+    }
+
+
+
+
+
 
     // Clearable 인터페이스의 메서드 구현
     @Override
