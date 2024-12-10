@@ -45,6 +45,7 @@ public class ItemComponents {
     private static <T> ItemComponent<T> register(Identifier id, UnaryOperator<ItemComponent.Builder<T>> operator) {
         return (ItemComponent<T>) Registry.register(Registries.ITEM_COMPONENTS, id, operator.apply((ItemComponent.getBuilder())).build());
     }
+    public static ItemComponent<String> NAME = register(Identifier.of("name"), (builder) -> builder.codec(Codec.STRING));
 
     public static void load() {
         // NO-OP

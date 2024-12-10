@@ -13,7 +13,6 @@ import java.util.Random;
 public class Player extends Entity implements Inventory, Clearable {
     private float gold; // 플레이어의 돈
     private float reputation; // 플레이어의 명성
-    private float health; // 플레이어의 체력
     private final ItemStack[] stacks; // 인벤토리 (아이템 스택 배열)
     private final int maxSize; // 인벤토리 최대 슬롯 수
     private static final int DEFAULT_INVENTORY_SIZE = 30; // 기본 인벤토리 크기
@@ -23,7 +22,6 @@ public class Player extends Entity implements Inventory, Clearable {
         super(Registries.ENTITY_TYPE.get(typeKey), lootTableManager, scene); // Entity 생성자 호출
         this.gold = 0; // 초기 금액 설정
         this.reputation = 0; // 초기 명성 설정
-        this.health = 100; // 초기 체력 설정
         this.maxSize = DEFAULT_INVENTORY_SIZE; // 기본 인벤토리 크기 설정
         this.stacks = new ItemStack[maxSize]; // 인벤토리 초기화
     }
