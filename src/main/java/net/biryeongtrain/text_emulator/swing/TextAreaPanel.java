@@ -1,5 +1,6 @@
 package net.biryeongtrain.text_emulator.swing;
 
+import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.level.scene.ActionType;
 import net.biryeongtrain.text_emulator.level.scene.SceneAction;
 import net.biryeongtrain.text_emulator.level.scene.SceneDecision;
@@ -24,7 +25,7 @@ public class TextAreaPanel extends JPanel {
             "그는 당신을 보고, 싸게 해줄태니 아이템을 조금 보고 가라고 합니다.",
             "당신은 어느정도 흥미가 당겨, 물품을 보기 시작했습니다."
     };
-    private SceneDecision textDecision = new SceneDecision("테스트", "test", Collections.singletonList(new SceneAction(ActionType.PRINT, Unit.GOLD, "테스트 성공")));
+    private SceneDecision textDecision = new SceneDecision("테스트", "test", List.of(new SceneAction(ActionType.PRINT, Unit.GOLD, "테스트 성공"), new SceneAction(ActionType.GIVE, Unit.GOLD, "100")));
 
     public TextAreaPanel() {
         setLayout(new BorderLayout());
@@ -47,7 +48,7 @@ public class TextAreaPanel extends JPanel {
         initializeScenes();
 
         // 테스트용 문자열 삽입
-        setTextArray(testText);
+        setTextArray(GameManager.getInstance().getSceneTexts());
         // 버튼 생성 테스트
         new Button(textDecision);
 
@@ -84,9 +85,9 @@ public class TextAreaPanel extends JPanel {
     }
 
     // 씬 초기화
-    private void initializeScenes() {
-        TextBuffer = new LinkedList<String>();
-        CharBuffer = new LinkedList<Character>();
+    public void initializeScenes() {
+        TextBuffer = new LinkedList<>();
+        CharBuffer = new LinkedList<>();
         textArea.setText("");
     }
 
