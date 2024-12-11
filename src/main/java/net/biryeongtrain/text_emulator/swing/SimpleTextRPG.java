@@ -5,6 +5,7 @@ import java.awt.*;
 
 public class SimpleTextRPG extends JFrame {
     Dimension centerSize = new Dimension(640, 685);
+
     private TextAreaPanel textAreaPanel;
     private PlayerInfoPanel playerInfoPanel;
     private PlayerInventoryPanel playerInventoryPanel;
@@ -21,6 +22,7 @@ public class SimpleTextRPG extends JFrame {
 
         // 텍스트 패널 위치 및 크기 설정
         textAreaPanel = new TextAreaPanel();
+
         textAreaPanel.setSize(centerSize);
         textAreaPanel.setLocation((1280 - centerSize.width) / 2,0);
         c.add(textAreaPanel);
@@ -29,16 +31,19 @@ public class SimpleTextRPG extends JFrame {
         JPanel PlayerPanel = new JPanel(new GridLayout(2,1,1,1));
         PlayerPanel.setSize(centerSize.width/2 - 1, centerSize.height);
         add(PlayerPanel);
+
         playerInfoPanel = new PlayerInfoPanel();
         playerInventoryPanel = new PlayerInventoryPanel();
         PlayerPanel.add(playerInfoPanel);
         PlayerPanel.add(playerInventoryPanel);
+
 
         // 씬 및 엔티티 정보 패널 위치 및 크기 설정
         JPanel ScenePanel = new JPanel(new GridLayout(2,1,1,1));
         ScenePanel.setSize(centerSize.width/2 - 1, centerSize.height);
         ScenePanel.setLocation(1280 - centerSize.width / 2 +1,0);
         add(ScenePanel);
+
         sceneInfoPanel = new SceneInfoPanel();
         entityInfoPanel = new EntityInfoPanel();
         ScenePanel.add(sceneInfoPanel);
@@ -49,6 +54,7 @@ public class SimpleTextRPG extends JFrame {
         setSize(1280, 720);
         setVisible(true);
     }
+}
 
     public TextAreaPanel getTextAreaPanel() {
         return textAreaPanel;
