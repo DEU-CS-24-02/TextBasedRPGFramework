@@ -1,15 +1,16 @@
 package net.biryeongtrain.text_emulator.swing;
 
+import net.biryeongtrain.text_emulator.level.scene.ActionType;
 import net.biryeongtrain.text_emulator.level.scene.SceneAction;
 import net.biryeongtrain.text_emulator.level.scene.SceneDecision;
+import net.biryeongtrain.text_emulator.level.scene.Unit;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
-import java.util.Queue;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 public class TextAreaPanel extends JPanel {
@@ -24,6 +25,7 @@ public class TextAreaPanel extends JPanel {
             "그는 당신을 보고, 싸게 해줄태니 아이템을 조금 보고 가라고 합니다.",
             "당신은 어느정도 흥미가 당겨, 물품을 보기 시작했습니다."
     };
+    private SceneDecision textDecision = new SceneDecision("테스트", "test", Collections.singletonList(new SceneAction(ActionType.PRINT, Unit.GOLD, "테스트 성공")));
 
     public TextAreaPanel() {
         setLayout(new BorderLayout());
@@ -36,10 +38,13 @@ public class TextAreaPanel extends JPanel {
         textArea.addMouseListener(new textAreaMouseListener());
         add(new JScrollPane(textArea), BorderLayout.CENTER);
 
-        // 버튼 추가
+        // 버튼 페널 추가
         ButtonPanel = new JPanel();
         ButtonPanel.setLayout(new GridLayout(1,1));
         add(ButtonPanel, BorderLayout.SOUTH);
+
+        // 버튼 생성 테스트
+        createButton(textDecision);
 
         // 씬 초기화
         initializeScenes();
@@ -62,11 +67,11 @@ public class TextAreaPanel extends JPanel {
 
     // 버튼 추가
     public void createButton(SceneDecision decision) {
+        ButtonPanel.setLayout(new GridLayout(ButtonPanel.getComponentCount() + 1,1));
         JButton newButton = new JButton();
         newButton.setText(decision.text());
         newButton.addActionListener(e -> buttonExe(decision.actions()));
         ButtonPanel.add(newButton);
-        ButtonPanel.setLayout(new GridLayout(ButtonPanel.getComponentCount() + 1,1));
     }
 
     private void buttonExe(List<SceneAction> actions) {
@@ -116,10 +121,8 @@ public class TextAreaPanel extends JPanel {
             skipCurrentText();
             return;
         }
-        // 모두 출력했으면 씬 초기화
+        // 모두 출력했으면 리턴
         if(TextBuffer.isEmpty()) {
-            textArea.setText("");
-            nextButton.setEnabled(false);
             return;
         }
         // 새로운 씬 출력
