@@ -1,16 +1,23 @@
 package net.biryeongtrain.text_emulator.swing;
 
+import net.biryeongtrain.text_emulator.level.scene.SceneAction;
+import net.biryeongtrain.text_emulator.level.scene.SceneDecision;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Queue;
 import java.util.LinkedList;
+import java.util.List;
 
 public class TextAreaPanel extends JPanel {
     Timer timer;
     private JTextArea textArea; // 텍스트를 출력할 영역
     private JButton nextButton; // 다음 장면으로 이동하는 버튼
     private Queue<String> TextBuffer; // 씬과 텍스트 데이터를 저장
+    private JPanel ButtonPanel;
     private Queue<Character> CharBuffer;
     private String[] testText = {
             "험난한 여정이 계속되는 가운데, 당신은 외진 길에서 상인을 만났습니다.",
@@ -26,12 +33,13 @@ public class TextAreaPanel extends JPanel {
         textArea.setEditable(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
+        textArea.addMouseListener(new textAreaMouseListener());
         add(new JScrollPane(textArea), BorderLayout.CENTER);
 
         // 버튼 추가
-        nextButton = new JButton("Next Scene");
-        nextButton.addActionListener(e -> moveToNextText());
-        add(nextButton, BorderLayout.SOUTH);
+        ButtonPanel = new JPanel();
+        ButtonPanel.setLayout(new GridLayout(1,1));
+        add(ButtonPanel, BorderLayout.SOUTH);
 
         // 씬 초기화
         initializeScenes();
@@ -46,7 +54,28 @@ public class TextAreaPanel extends JPanel {
         setVisible(true);
     }
 
-    //씬 초기화
+    // 버튼 패널 초기화
+    public void clearButtons() {
+        ButtonPanel.removeAll();
+        ButtonPanel.setLayout(new GridLayout(1,1));
+    }
+
+    // 버튼 추가
+    public void createButton(SceneDecision decision) {
+        JButton newButton = new JButton();
+        newButton.setText(decision.text());
+        newButton.addActionListener(e -> buttonExe(decision.actions()));
+        ButtonPanel.add(newButton);
+        ButtonPanel.setLayout(new GridLayout(ButtonPanel.getComponentCount() + 1,1));
+    }
+
+    private void buttonExe(List<SceneAction> actions) {
+        for (SceneAction action : actions) {
+            action.execute();
+        }
+    }
+
+    // 씬 초기화
     private void initializeScenes() {
         TextBuffer = new LinkedList<String>();
         CharBuffer = new LinkedList<Character>();
@@ -71,6 +100,12 @@ public class TextAreaPanel extends JPanel {
         timer.stop();
         while(!CharBuffer.isEmpty()) {
             textArea.append(String.valueOf(CharBuffer.poll()));
+        }
+    }
+
+    class textAreaMouseListener extends MouseAdapter {
+        public void mousePressed(MouseEvent e) {
+            moveToNextText();
         }
     }
 
