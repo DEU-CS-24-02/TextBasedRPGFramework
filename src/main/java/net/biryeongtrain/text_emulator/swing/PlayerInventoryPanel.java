@@ -2,8 +2,15 @@ package net.biryeongtrain.text_emulator.swing;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+
+import net.biryeongtrain.text_emulator.GameManager;
+import net.biryeongtrain.text_emulator.entity.Player;
+import net.biryeongtrain.text_emulator.entity.PlayerInventory;
+import net.biryeongtrain.text_emulator.item.ItemStack;
 
 public class PlayerInventoryPanel extends JPanel {
+    static JScrollPane scrollPane;
     public PlayerInventoryPanel() {
         setBackground(Color.BLACK);
         setLayout(null);
@@ -16,11 +23,30 @@ public class PlayerInventoryPanel extends JPanel {
         panelNameLabel.setLocation(10, 0);
         add(panelNameLabel);
 
-//        JScrollPane scrollPane = new JScrollPane();
-//        scrollPane.setSize(320, 360);
-//        scrollPane.setLocation(0, 50);
-//        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-//        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//        add(scrollPane);
+        scrollPane = new JScrollPane();
+        scrollPane.getViewport().setBackground(Color.BLACK);
+        scrollPane.setSize(320, 360);
+        scrollPane.setLocation(0, 50);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        add(scrollPane);
+    }
+
+    static class ItemUseButton extends JButton {
+        public ItemUseButton(ItemStack stack) {
+            JButton newButton = new JButton();
+            newButton.setText(stack.getItem().getName() + " " + stack.getCount() + "개");
+            newButton.addActionListener(e -> stack.Use());
+            scrollPane.add(newButton);
+        }
+    }
+
+    public void UpdateData() {
+        Player player = GameManager.getInstance().getPlayer();
+        PlayerInventory playerInventory = player.getInventory();
+        List<ItemStack> stacks = playerInventory.getStacks();
+        stacks.sort((s1,s2) -> s1.getItem().getName().compareTo(s2.getItem().getName()));
+        for (ItemStack Item : stacks)
+            new ItemUseButton(Item);
     }
 }
