@@ -42,14 +42,14 @@ public class TextAreaPanel extends JPanel {
         ButtonPanel.setLayout(new GridLayout(1,1));
         add(ButtonPanel, BorderLayout.SOUTH);
 
-        // 버튼 생성 테스트
-        new Button(textDecision);
 
         // 씬 초기화
         initializeScenes();
 
         // 테스트용 문자열 삽입
         setTextArray(testText);
+        // 버튼 생성 테스트
+        new Button(textDecision);
 
         // 첫 번째 씬 출력
         moveToNextText();

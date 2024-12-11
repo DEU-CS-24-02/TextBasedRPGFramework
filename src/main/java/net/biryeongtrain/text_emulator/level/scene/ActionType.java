@@ -58,6 +58,10 @@ public enum ActionType implements StringIdentifiable {
     }, GOTO {
         @Override
         public void execute(GameManager instance, Unit unit, String value) {
+            if (value.equals("random")) {
+                instance.searchNextScene();
+                return;
+            }
             if (!ActionType.validateIdentifier(value)) {
                 return;
             }
@@ -69,14 +73,30 @@ public enum ActionType implements StringIdentifiable {
             }
             instance.goToScene(sceneId);
         }
-    };
+    },
+    COMBAT
+    {
+        @Override
+        public void execute(GameManager instance, Unit unit, String value) {
+            if (!ActionType.validateIdentifier(value)) {
+                return;
+            }
+            var type = Registries.ENTITY_TYPE.get(Identifier.of(value));
+            if (type == null) {
+                Main.LOGGER.error("Entity Type not found: {}", value);
+                return;
+            }
+            instance.startCombat(type);
+        }
+    }
+    ;
 
     public abstract void execute(GameManager instance, Unit unit, String value);
 
     public static EnumCodec<ActionType> CODEC = StringIdentifiable.createCodec(ActionType::values);
     private static boolean validateIdentifier(String value) {
         if (Identifier.validate(value).isError()) {
-            Main.LOGGER.error("Invalid Identifier: " + value);
+            Main.LOGGER.error("Invalid Identifier: {}", value);
             return false;
         }
         return true;

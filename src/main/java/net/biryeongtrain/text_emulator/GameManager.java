@@ -1,12 +1,14 @@
 package net.biryeongtrain.text_emulator;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.biryeongtrain.text_emulator.entity.Entity;
+import net.biryeongtrain.text_emulator.entity.EntityType;
 import net.biryeongtrain.text_emulator.entity.Player;
+import net.biryeongtrain.text_emulator.entity.damage.DamageType;
 import net.biryeongtrain.text_emulator.io.LoadManager;
 import net.biryeongtrain.text_emulator.io.SaveMeta;
 import net.biryeongtrain.text_emulator.level.Scene;
+import net.biryeongtrain.text_emulator.level.Scenes;
 import net.biryeongtrain.text_emulator.level.scene.SceneAction;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.scenario.ScenarioMeta;
@@ -16,7 +18,9 @@ import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.random.RandomGenerator;
+import java.util.random.RandomGeneratorFactory;
 import java.util.stream.Collectors;
 
 /**
@@ -26,14 +30,14 @@ import java.util.stream.Collectors;
  */
 public class GameManager {
     private static GameManager instance;
-    private static final SimpleTextRPG UI = new SimpleTextRPG();
+    private final SimpleTextRPG UI;
 
     private Player player;
     private volatile boolean isLoaded = false;
     private LoadManager loadManager;
     private Scene currentScene;
     private Scene nextRandomScene;
-    private final RandomGenerator rndGenerator = RandomGenerator.SplittableGenerator.of("GameInstanceRandom");
+    private final RandomGenerator rndGenerator = RandomGeneratorFactory.of("L64X128MixRandom").create(ThreadLocalRandom.current().nextLong());
     private final List<Identifier> completedScenes = new ObjectArrayList<>();
 
     private final List<Scene> selectableScene = new ObjectArrayList<>(Registries.SCENE.size());
@@ -41,6 +45,7 @@ public class GameManager {
 
     private GameManager() {
         this.loadManager = new LoadManager();
+        this.UI = new SimpleTextRPG();
     }
 
     public static GameManager getInstance() {
@@ -48,6 +53,16 @@ public class GameManager {
             instance = new GameManager();
         }
         return instance;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void start() {
+        if (this.currentScene == null && !this.completedScenes.contains(Scenes.START_SCENE.id())) {
+            this.currentScene = Scenes.START_SCENE;
+        }
     }
 
     public void searchNextScene() {
@@ -117,6 +132,23 @@ public class GameManager {
 
     public void shout(String... s) {
         UI.addTextSerializations(s);
+    }
+
+    public void goToScene(Identifier id) {
+        this.nextRandomScene = Registries.SCENE.get(id);
+    }
+
+    public void startCombat(EntityType type) {
+        float playerDamage = this.player.getDamage() - type.getDefaultArmor();
+        var entityKillChance = 100 - (type.getDefaultHealth() - playerDamage) * 10;
+        float rnd = rndGenerator.nextFloat(100);
+        if (rnd < entityKillChance) {
+            this.shout("적을 성공적으로 처치했습니다!");
+            this.player.addReputation(10);
+            return;
+        }
+        this.shout("적을 처치하지 못했습니다.");
+        player.damage(type.getDefaultDamage(), DamageType.ENTITY);
     }
 
     public RandomGenerator getRandom() {

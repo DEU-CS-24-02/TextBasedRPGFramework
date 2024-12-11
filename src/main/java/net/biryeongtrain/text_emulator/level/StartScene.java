@@ -8,15 +8,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartScene extends Scene{
+public class StartScene extends Scene {
 
-    private StartScene(Identifier id, SceneSelector selector, List<Pair<Integer, String>> conversations, List<SceneDecision> decision) {
+    private StartScene(Identifier id, SceneSelector selector, List<Pair<String, String>> conversations, List<SceneDecision> decision) {
         super(id, selector, conversations, decision);
     }
 
     public static StartScene create() {
-        SceneSelector selector = new SceneSelector(Condition.ALWAYS, null, null, null,10000);
-        List<Pair<Integer, String>> conversations = new ArrayList<>();
+        SceneSelector selector = new SceneSelector(Condition.ALWAYS, null, null, null, 10000);
+        List<Pair<String, String>> conversations = new ArrayList<>();
         String[] s = {
                 "게임을 시작하기 전 당신의 직업을 선택 해 주세요.",
                 "전사 : 적당한 체력과 적당한 공격력을 가지고 있습니다. 100골드를 가지고 시작합니다.",
@@ -24,7 +24,7 @@ public class StartScene extends Scene{
         };
         int i = 0;
         for (String string : s) {
-            conversations.add(new Pair<>(i++, string));
+            conversations.add(new Pair<>(Integer.toString(i++), string));
         }
         List<SceneDecision> decisions = getSceneDecisions();
 

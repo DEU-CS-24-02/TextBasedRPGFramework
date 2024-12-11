@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SceneInfoPanel extends JPanel {
-    JLabel SceneNameDataLabel;
-    JLabel SceneWeightDataLabel;
+    JLabel SceneNameDataLabel = new JLabel("");
+    JLabel SceneWeightDataLabel = new JLabel("");
     public SceneInfoPanel() {
         this.setBackground(Color.BLACK);
         setLayout(null);
@@ -51,6 +51,6 @@ public class SceneInfoPanel extends JPanel {
 
     public void UpdateData(Scene scene) {
         SceneNameDataLabel.setText(scene.id().getPath());
-        SceneWeightDataLabel.setText(scene.selecter().weight() + "");
+        SceneWeightDataLabel.setText(scene.selector().weight() + "");
     }
 }

@@ -7,6 +7,8 @@ import net.biryeongtrain.text_emulator.io.storage.ScenarioPath;
 import net.biryeongtrain.text_emulator.item.Item;
 import net.biryeongtrain.text_emulator.item.ItemStack;
 import net.biryeongtrain.text_emulator.item.Items;
+import net.biryeongtrain.text_emulator.level.Scene;
+import net.biryeongtrain.text_emulator.level.scene.*;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.scenario.ScenarioMeta;
 import net.biryeongtrain.text_emulator.utils.LogUtils;
@@ -63,6 +65,7 @@ public class IOTest {
         Path path3 = Path.of("./scenarios/aaa/scenario.json");
         Path entityTagPath = path.getParent().resolve("entity_tag/test_tag.json");
         Path entityTypePath = path.getParent().resolve("entity/test_entity.json");
+        Path scenePath = path.getParent().resolve("scene/test_scene.json");
         ScenarioMeta meta = new ScenarioMeta("테스트 시나리오", "test_scenario", "1.0.0", "테스트 시나리오입니다.", List.of("biryeongtrain"), List.of("test_scenario2"));
         ScenarioMeta meta2 = new ScenarioMeta("테스트 시나리오2", "test_scenario2", "1.0.0", "테스트 시나리오입니다.", List.of("biryeongtrain"), List.of());
         ScenarioMeta meta3 = new ScenarioMeta(
@@ -95,7 +98,7 @@ public class IOTest {
             var itemPath = ScenarioPath.getPath(path.getParent(), ScenarioPath.ITEM);
             if (!Files.exists(itemPath)) {
                 Files.createDirectories(itemPath);
-                Item item = new Item(new Item.Settings());
+                Item item = new Item(new Item.Settings(), "테스트");
                 var itemJson = Item.CODEC.encodeStart(JsonOps.INSTANCE, item).result().get();
                 itemJson.getAsJsonObject().addProperty("id", Identifier.ofDefault("test_item").toString());
                 Files.writeString(itemPath.resolve("test_item.json"), itemJson.toString(), StandardCharsets.UTF_8);
@@ -118,6 +121,17 @@ public class IOTest {
                 var entityTypeJson = EntityType.CODEC.encodeStart(JsonOps.INSTANCE, entityType).getOrThrow();
                 Files.writeString(entityTypePath, entityTypeJson.toString());
             }
+
+            if (!Files.exists(scenePath)) {
+                Files.createDirectories(scenePath.getParent());
+                var selector = new SceneSelector(Condition.IF, Operator.BELOW, "50", Unit.GOLD, 100);
+                var decision1 = new SceneDecision("테스트1", "fancy", List.of(new SceneAction(ActionType.PRINT, Unit.EMPTY, "테스트1")));
+                var scene = new Scene(Identifier.ofDefault("test_scene"), selector , Scene.conversations(List.of("테스트1", "테스트2", "테스트3")), List.of(decision1));
+                var sceneResult = Scene.CODEC.encodeStart(JsonOps.INSTANCE, scene);
+                var sceneJson = sceneResult.result().get();
+                Files.writeString(scenePath, sceneJson.toString());
+            }
+
             Main.LOGGER.info("DONE!");
         } catch (IOException e) {
             Assertions.fail(e);

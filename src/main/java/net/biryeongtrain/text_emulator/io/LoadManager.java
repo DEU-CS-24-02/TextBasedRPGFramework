@@ -115,7 +115,7 @@ public class LoadManager {
         if (Files.exists(SCENARIO_ROOT)) {
             if (Files.isDirectory(SCENARIO_ROOT)) {
                 Files.list(SCENARIO_ROOT).forEach(path -> {
-                    if (Files.isDirectory(path)) {
+                    if (!Files.isDirectory(path)) {
                         return;
                     }
                     var scenarioFile = path.resolve("scenario.json");

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.biryeongtrain.text_emulator.item.Item;
 import net.biryeongtrain.text_emulator.item.ItemStack;
 import net.biryeongtrain.text_emulator.utils.Util;
 
@@ -93,6 +94,15 @@ public class PlayerInventory implements Inventory {
         return ItemStack.EMPTY;
     }
 
+    public boolean removeStack(Item item) {
+        if (this.containsAny(stack -> stack.getItem() == item)) {
+            var that = this.stacks.stream().filter(stack -> stack.getItem() == item).findFirst().get();
+            that.decrement(1);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void setStack(int slot, ItemStack stack) {
         this.stacks.set(slot, stack);
@@ -127,5 +137,9 @@ public class PlayerInventory implements Inventory {
 
     public long getReputation() {
         return reputation;
+    }
+
+    public void addReputation(long value) {
+        this.reputation += value;
     }
 }

@@ -14,7 +14,8 @@ public class Entity implements Serializable<Entity> {
                     Registries.ENTITY_TYPE.getCodec().fieldOf("type").forGetter(Entity::getType),
                     Codec.FLOAT.fieldOf("health").forGetter(Entity::getHealth),
                     Codec.FLOAT.fieldOf("armor").forGetter(Entity::getArmor),
-                    Codec.FLOAT.fieldOf("damage").forGetter(Entity::getDamage)
+                    Codec.FLOAT.fieldOf("damage").forGetter(Entity::getDamage),
+                    Codec.FLOAT.fieldOf("max_health").forGetter(Entity::getMaxHealth)
             ).apply(instance, Entity::new))
     );
 
@@ -22,19 +23,28 @@ public class Entity implements Serializable<Entity> {
     private float health;
     private float armor;
     private float damage;
+    private float maxHealth;
+    public boolean isAlive = true;
 
     public Entity(EntityType type) {
         this.type = type;
         this.health = type.getDefaultHealth();
         this.armor = type.getDefaultArmor();
         this.damage = type.getDefaultDamage();
+        this.maxHealth = type.getDefaultHealth();
     }
-    Entity(EntityType type, float health, float armor, float damage) {
+    Entity(EntityType type, float health, float armor, float damage, float maxHealth) {
         this.type = type;
         this.health = health;
         this.armor = armor;
         this.damage = damage;
+        this.maxHealth = maxHealth;
     }
+
+    public float getMaxHealth() {
+        return maxHealth;
+    }
+
 
     public EntityType getType() {
         return type;
@@ -42,6 +52,10 @@ public class Entity implements Serializable<Entity> {
 
     public float getHealth() {
         return health;
+    }
+
+    public void addHealth(float value) {
+        this.health = Math.clamp(health + value, 0, maxHealth);
     }
 
     public float getArmor() {
@@ -54,7 +68,7 @@ public class Entity implements Serializable<Entity> {
 
     public void heal(float value) {
         GameManager.getInstance().shout(String.format("%s가 %s 만큼 회복했습니다!", this.type.getKey().getPath(), value));
-        this.health = Math.max(health + value, type.getDefaultHealth());
+        this.health = Math.max(health + value, maxHealth);
     }
 
     public void damage(float amount, DamageType type) {

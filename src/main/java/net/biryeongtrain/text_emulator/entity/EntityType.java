@@ -65,7 +65,7 @@ public class EntityType {
     }
 
     public Entity createEntity() {
-        return null;
+        return new Entity(this);
     }
 
     @FunctionalInterface
