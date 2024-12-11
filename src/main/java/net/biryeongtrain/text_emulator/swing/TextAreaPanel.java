@@ -1,5 +1,6 @@
 package net.biryeongtrain.text_emulator.swing;
 
+import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.level.scene.ActionType;
 import net.biryeongtrain.text_emulator.level.scene.SceneAction;
 import net.biryeongtrain.text_emulator.level.scene.SceneDecision;
@@ -19,12 +20,14 @@ public class TextAreaPanel extends JPanel {
     private Queue<String> TextBuffer; // 씬과 텍스트 데이터를 저장
     private static JPanel ButtonPanel;
     private Queue<Character> CharBuffer;
+    private static boolean isTextAnimationRun = false;
+    private static boolean isExecutionButton = false;
     private String[] testText = {
             "험난한 여정이 계속되는 가운데, 당신은 외진 길에서 상인을 만났습니다.",
             "그는 당신을 보고, 싸게 해줄태니 아이템을 조금 보고 가라고 합니다.",
             "당신은 어느정도 흥미가 당겨, 물품을 보기 시작했습니다."
     };
-    private SceneDecision textDecision = new SceneDecision("테스트", "test", Collections.singletonList(new SceneAction(ActionType.PRINT, Unit.GOLD, "테스트 성공")));
+    private SceneDecision textDecision = new SceneDecision("테스트", "test", List.of(new SceneAction(ActionType.PRINT, Unit.GOLD, "테스트 성공"), new SceneAction(ActionType.GIVE, Unit.GOLD, "100")));
 
     public TextAreaPanel() {
         setLayout(new BorderLayout());
@@ -42,14 +45,14 @@ public class TextAreaPanel extends JPanel {
         ButtonPanel.setLayout(new GridLayout(1,1));
         add(ButtonPanel, BorderLayout.SOUTH);
 
-        // 버튼 생성 테스트
-        new Button(textDecision);
 
         // 씬 초기화
         initializeScenes();
 
         // 테스트용 문자열 삽입
-        setTextArray(testText);
+        setTextArray(GameManager.getInstance().getSceneTexts());
+        // 버튼 생성 테스트
+        new Button(textDecision);
 
         // 첫 번째 씬 출력
         moveToNextText();
@@ -59,7 +62,7 @@ public class TextAreaPanel extends JPanel {
     }
 
     // 버튼 패널 초기화
-    public void clearButtons() {
+    static public void clearButtons() {
         ButtonPanel.removeAll();
         ButtonPanel.setLayout(new GridLayout(1,1));
     }
@@ -70,6 +73,7 @@ public class TextAreaPanel extends JPanel {
         public Button(SceneDecision decision) {
             ButtonPanel.setLayout(new GridLayout(ButtonPanel.getComponentCount() + 1,1));
             JButton newButton = new JButton();
+
             newButton.setText(decision.text());
             newButton.addActionListener(e -> buttonExe(decision.actions()));
             ButtonPanel.add(newButton);
@@ -78,20 +82,22 @@ public class TextAreaPanel extends JPanel {
     }
 
      static private void buttonExe(List<SceneAction> actions) {
+        clearButtons();
         for (SceneAction action : actions) {
             action.execute();
         }
     }
 
     // 씬 초기화
-    private void initializeScenes() {
-        TextBuffer = new LinkedList<String>();
-        CharBuffer = new LinkedList<Character>();
+    public void initializeScenes() {
+        TextBuffer = new LinkedList<>();
+        CharBuffer = new LinkedList<>();
         textArea.setText("");
     }
 
     // 한 화면에 출력할 문자열들 삽입
     public void setTextArray(String... texts) {
+        isTextAnimationRun = true;
         TextBuffer.addAll(Arrays.asList(texts));
     }
 
@@ -142,6 +148,8 @@ public class TextAreaPanel extends JPanel {
             if (!CharBuffer.isEmpty()) {
                 textArea.append(String.valueOf(CharBuffer.poll())); // 한 글자씩 출력
             } else {
+                if(TextBuffer.isEmpty())
+                    isTextAnimationRun = false;
                 timer.stop(); // 모든 글자를 출력하면 타이머 중지
             }
 
