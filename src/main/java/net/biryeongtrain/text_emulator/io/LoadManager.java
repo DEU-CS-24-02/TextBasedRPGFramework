@@ -13,6 +13,7 @@ import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.Main;
 import net.biryeongtrain.text_emulator.entity.Player;
 import net.biryeongtrain.text_emulator.io.loader.*;
+import net.biryeongtrain.text_emulator.level.Scenes;
 import net.biryeongtrain.text_emulator.scenario.ScenarioMeta;
 
 import java.io.IOException;
@@ -89,7 +90,7 @@ public class LoadManager {
         try {
             if (!Files.exists(SAVE_PATH)) {
                 Main.LOGGER.info("Can't find save instance file. creating new save meta... (this is not an error!");
-                var meta = new SaveMeta(List.of(), new Player(), null, List.of());
+                var meta = new SaveMeta(List.of(), new Player(), Scenes.START_SCENE.id(), List.of());
                 GameManager.getInstance().setSaveMeta(meta);
                 return;
             }

@@ -1,5 +1,6 @@
 package net.biryeongtrain.text_emulator.swing;
 
+import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.level.Scene;
 
 import javax.swing.*;
@@ -49,8 +50,9 @@ public class SceneInfoPanel extends JPanel {
         add(SceneWeightDataLabel);
     }
 
-    public void UpdateData(Scene scene) {
-        SceneNameDataLabel.setText(scene.id().getPath());
-        SceneWeightDataLabel.setText(scene.selector().weight() + "");
+    public void UpdateData() {
+        GameManager manager = GameManager.getInstance();
+        SceneNameDataLabel.setText(manager.getCurrentScene().id().getPath());
+        SceneWeightDataLabel.setText(manager.getCurrentScene().selector().weight() + "");
     }
 }

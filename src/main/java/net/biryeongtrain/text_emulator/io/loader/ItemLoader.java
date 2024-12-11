@@ -42,7 +42,7 @@ public class ItemLoader implements ContentsLoader<Item> {
                     }
                 });
             } catch (Exception e) {
-                Main.LOGGER.error("Failed to load item path: {}", itemRootPath);
+                Main.LOGGER.error("Failed to load item path: {}, {}", itemRootPath, e.getMessage());
                 return false;
             }
         }

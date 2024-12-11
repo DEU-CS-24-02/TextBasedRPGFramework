@@ -29,6 +29,7 @@ public class Player extends Entity {
     }
 
 
+
     public void addGold(int value) {
         this.inventory.addGold(value);
         GameManager.getInstance().shout(String.format("골드 %d개를 획득했습니다!", value));
@@ -59,4 +60,5 @@ public class Player extends Entity {
         this.inventory.addReputation(value);
         GameManager.getInstance().shout(String.format("명성 %d을(를) 획득했습니다!", value));
     }
+
 }

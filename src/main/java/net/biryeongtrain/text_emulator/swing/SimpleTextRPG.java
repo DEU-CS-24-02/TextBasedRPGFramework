@@ -1,5 +1,7 @@
 package net.biryeongtrain.text_emulator.swing;
 
+import net.biryeongtrain.text_emulator.GameManager;
+import net.biryeongtrain.text_emulator.entity.Player;
 import net.biryeongtrain.text_emulator.utils.Util;
 
 import javax.swing.*;
@@ -60,6 +62,13 @@ public class SimpleTextRPG extends JFrame {
         setResizable(false);
         setVisible(true);
         this.addWindowListener(new OnCloseEventHandler());
+        this.entityInfoPanel.UpdateData();
+
+        Timer timer = new Timer(1000, e -> {
+            this.playerInfoPanel.UpdateData();
+            this.sceneInfoPanel.UpdateData();
+        });
+        timer.start();
     }
 
 

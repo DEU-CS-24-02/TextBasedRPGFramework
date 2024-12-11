@@ -10,7 +10,7 @@ public class EntityTypes {
     public static EntityType PLAYER = Registry.register(
             Registries.ENTITY_TYPE,
             Identifier.ofDefault("player"),
-            new EntityType(Identifier.ofDefault("player"), 10, 1, 1, new LootTableManager(List.of(LootTableInstance.EMPTY)), List.of())
+            new EntityType(Identifier.ofDefault("player"), 20, 5, 3, new LootTableManager(List.of(LootTableInstance.EMPTY)), List.of())
     );
 
     public static void register() {

@@ -90,7 +90,7 @@ public class EntityInfoPanel extends JPanel {
         DataLabels.add(ArmorDataLabel);
     }
 
-    public void UpdateDate() {
+    public void UpdateData() {
         DataLabels.setVisible(false);
         panelNameLabel.setText("No Enemy");
     }

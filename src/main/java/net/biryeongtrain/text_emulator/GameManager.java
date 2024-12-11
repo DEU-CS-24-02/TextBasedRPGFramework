@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 public class GameManager {
     private static GameManager instance;
-    private final SimpleTextRPG UI;
+    public static SimpleTextRPG UI;
 
     private Player player;
     private volatile boolean isLoaded = false;
@@ -45,7 +45,6 @@ public class GameManager {
 
     private GameManager() {
         this.loadManager = new LoadManager();
-        this.UI = new SimpleTextRPG();
     }
 
     public static GameManager getInstance() {
@@ -76,6 +75,10 @@ public class GameManager {
         });
     }
 
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
     public void selectNextScene() {
         var stream = this.selectableScene.stream().filter(Scene::isAlways);
         var optionalScene = stream.findAny();
@@ -91,10 +94,10 @@ public class GameManager {
     }
 
     public void load() {
-        CompletableFuture.runAsync(() -> {
-            loadManager.load();
+        Util.IOExecutor.execute(() -> {
+            this.loadManager.load();
             this.isLoaded = true;
-        }, Util.IOExecutor).getNow(null);
+        });
     }
 
     public void setSaveMeta(SaveMeta meta) {
@@ -156,6 +159,9 @@ public class GameManager {
     }
 
     public String[] getSceneTexts() {
+        if (this.currentScene == null) {
+            return new String[0];
+        }
         return this.currentScene.getConversations().toArray(new String[0]);
     }
 }

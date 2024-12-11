@@ -109,7 +109,14 @@ public enum Operator implements StringIdentifiable {
             var player = GameManager.getInstance().getPlayer();
             return player.getInventory().containsAny(itemStack -> itemStack.getItem() == item);
         }
-    };
+    },
+    NONE {
+        @Override
+        public <T> boolean compare(Unit unit, T value2) {
+            return true;
+        }
+    }
+    ;
 
     public static EnumCodec<Operator> CODEC = StringIdentifiable.createCodec(Operator::values);
 
