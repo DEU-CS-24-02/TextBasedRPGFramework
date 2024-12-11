@@ -53,12 +53,27 @@ public class TextAreaPanel extends JPanel {
         setTextArray(GameManager.getInstance().getSceneTexts());
         // 버튼 생성 테스트
         new Button(textDecision);
-
-        // 첫 번째 씬 출력
+        // 씬 출력 테스트
         moveToNextText();
 
         setSize(1920, 1080);
         setVisible(true);
+    }
+
+    /**
+     * isTextAnimationRun == true 면 대기
+     * isTextAnimationRun == false 일 때
+     * isExecutionButton == false 면
+     * 버튼 만들기
+     * isExecutionButton == true 면
+     * 다음 씬으로 가기
+     * (goto 액션 이때까지 대기시킴)
+     */
+    public boolean isTextAnimationRun() {
+        return isTextAnimationRun;
+    }
+    public boolean isExecutionButton() {
+        return isExecutionButton;
     }
 
     // 버튼 패널 초기화
@@ -81,7 +96,8 @@ public class TextAreaPanel extends JPanel {
         }
     }
 
-     static private void buttonExe(List<SceneAction> actions) {
+    static private void buttonExe(List<SceneAction> actions) {
+        isExecutionButton = true;
         clearButtons();
         for (SceneAction action : actions) {
             action.execute();
@@ -90,6 +106,7 @@ public class TextAreaPanel extends JPanel {
 
     // 씬 초기화
     public void initializeScenes() {
+        isExecutionButton = false;
         TextBuffer = new LinkedList<>();
         CharBuffer = new LinkedList<>();
         textArea.setText("");
