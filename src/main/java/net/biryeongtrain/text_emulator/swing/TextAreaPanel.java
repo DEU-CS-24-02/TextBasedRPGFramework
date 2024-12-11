@@ -16,9 +16,8 @@ import java.util.List;
 public class TextAreaPanel extends JPanel {
     Timer timer;
     private JTextArea textArea; // 텍스트를 출력할 영역
-    private JButton nextButton; // 다음 장면으로 이동하는 버튼
     private Queue<String> TextBuffer; // 씬과 텍스트 데이터를 저장
-    private JPanel ButtonPanel;
+    private static JPanel ButtonPanel;
     private Queue<Character> CharBuffer;
     private String[] testText = {
             "험난한 여정이 계속되는 가운데, 당신은 외진 길에서 상인을 만났습니다.",
@@ -44,7 +43,7 @@ public class TextAreaPanel extends JPanel {
         add(ButtonPanel, BorderLayout.SOUTH);
 
         // 버튼 생성 테스트
-        createButton(textDecision);
+        new Button(textDecision);
 
         // 씬 초기화
         initializeScenes();
@@ -66,15 +65,19 @@ public class TextAreaPanel extends JPanel {
     }
 
     // 버튼 추가
-    public void createButton(SceneDecision decision) {
-        ButtonPanel.setLayout(new GridLayout(ButtonPanel.getComponentCount() + 1,1));
-        JButton newButton = new JButton();
-        newButton.setText(decision.text());
-        newButton.addActionListener(e -> buttonExe(decision.actions()));
-        ButtonPanel.add(newButton);
+    static class Button extends JButton {
+        SceneDecision decision;
+        public Button(SceneDecision decision) {
+            ButtonPanel.setLayout(new GridLayout(ButtonPanel.getComponentCount() + 1,1));
+            JButton newButton = new JButton();
+            newButton.setText(decision.text());
+            newButton.addActionListener(e -> buttonExe(decision.actions()));
+            ButtonPanel.add(newButton);
+            this.decision = decision;
+        }
     }
 
-    private void buttonExe(List<SceneAction> actions) {
+     static private void buttonExe(List<SceneAction> actions) {
         for (SceneAction action : actions) {
             action.execute();
         }
