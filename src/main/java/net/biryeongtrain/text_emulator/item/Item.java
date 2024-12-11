@@ -25,16 +25,22 @@ public class Item {
      * DO NOT USE IF YOU ARE NOT USING IN I/O
      */
     public static final Codec<Item> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("name").forGetter(Item::getName),
             ComponentMap.CODEC.fieldOf("components").forGetter(Item::getComponents)
     ).apply(instance, Item::new));
     private final ComponentMap components;
+    private final String name;
 
-    private Item(ComponentMap components) {
+    private Item(String name, ComponentMap components) {
         this.components = components;
+        this.name = name;
     }
 
-    public Item(Settings settings) {
+
+
+    public Item(Settings settings, String name) {
         this.components = settings.getValidateComponents();
+        this.name = name;
     }
 
     public static Identifier getId(Item item) {
@@ -47,6 +53,10 @@ public class Item {
 
     public int getMaxCount() {
         return this.components.getOrDefault(ItemComponents.MAX_STACK_SIZE, 1);
+    }
+
+    public String getName() {
+        return name;
     }
 
     /**

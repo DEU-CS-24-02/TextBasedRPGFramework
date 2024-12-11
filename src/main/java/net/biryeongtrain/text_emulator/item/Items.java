@@ -10,8 +10,8 @@ import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
  * 다른 아이템들은 동적으로 로드 되기 떄문에 따로 등록하지 않아도 됩니다.
  */
 public class Items {
-    public static Item AIR = Registry.register(Registries.ITEM, Identifier.ofDefault("air"), new Item(new Item.Settings()));
-    public static Item TEST_ITEM = Registry.register(Registries.ITEM, Identifier.ofDefault("test_item"), new Item(new Item.Settings().setMaxCount(33).component(ItemComponents.MAX_STACK_SIZE, 32)));
+    public static Item AIR = Registry.register(Registries.ITEM, Identifier.ofDefault("air"), new Item(new Item.Settings(), "공기"));
+    public static Item TEST_ITEM = Registry.register(Registries.ITEM, Identifier.ofDefault("test_item"), new Item(new Item.Settings().setMaxCount(33).component(ItemComponents.MAX_STACK_SIZE, 32), "테스트 아이템"));
 
     public static void register() {
         // NO-OP
