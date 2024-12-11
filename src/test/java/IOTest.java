@@ -1,10 +1,7 @@
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import net.biryeongtrain.text_emulator.Main;
-import net.biryeongtrain.text_emulator.entity.EntityTag;
-import net.biryeongtrain.text_emulator.entity.EntityType;
-import net.biryeongtrain.text_emulator.entity.LootTableInstance;
-import net.biryeongtrain.text_emulator.entity.LootTableManager;
+import net.biryeongtrain.text_emulator.entity.*;
 import net.biryeongtrain.text_emulator.io.LoadManager;
 import net.biryeongtrain.text_emulator.io.storage.ScenarioPath;
 import net.biryeongtrain.text_emulator.item.Item;
@@ -12,11 +9,13 @@ import net.biryeongtrain.text_emulator.item.ItemStack;
 import net.biryeongtrain.text_emulator.item.Items;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.scenario.ScenarioMeta;
+import net.biryeongtrain.text_emulator.utils.LogUtils;
 import net.biryeongtrain.text_emulator.utils.Util;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -28,9 +27,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class IOTest {
+    public static Logger LOGGER = LogUtils.getLogger();
     @Test
     @DisplayName("PathTest")
     public void pathTest() throws ExecutionException, InterruptedException {
+
         String strPath = "./test";
         Path path = Path.of(strPath);
 
@@ -121,5 +122,16 @@ public class IOTest {
         } catch (IOException e) {
             Assertions.fail(e);
         }
+    }
+
+    @Test
+    public void TestInventory() {
+        Items.register();
+        EntityTypes.register();
+        var inventory = new PlayerInventory();
+        var codec = PlayerInventory.CODEC;
+        var json = codec.encodeStart(JsonOps.INSTANCE, inventory).result().get();
+        var result = codec.decode(JsonOps.INSTANCE, json).result().get().getFirst();
+        LOGGER.info(json.toString());
     }
 }

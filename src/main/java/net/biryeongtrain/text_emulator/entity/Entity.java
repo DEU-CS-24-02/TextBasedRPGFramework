@@ -3,6 +3,7 @@ package net.biryeongtrain.text_emulator.entity;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.entity.damage.DamageType;
 import net.biryeongtrain.text_emulator.io.Serializable;
 import net.biryeongtrain.text_emulator.registry.Registries;
@@ -28,7 +29,7 @@ public class Entity implements Serializable<Entity> {
         this.armor = type.getDefaultArmor();
         this.damage = type.getDefaultDamage();
     }
-    private Entity(EntityType type, float health, float armor, float damage) {
+    Entity(EntityType type, float health, float armor, float damage) {
         this.type = type;
         this.health = health;
         this.armor = armor;
@@ -49,6 +50,11 @@ public class Entity implements Serializable<Entity> {
 
     public float getDamage() {
         return damage;
+    }
+
+    public void heal(float value) {
+        GameManager.getInstance().shout(String.format("%s가 %s 만큼 회복했습니다!", this.type.getKey().getPath(), value));
+        this.health = Math.max(health + value, type.getDefaultHealth());
     }
 
     public void damage(float amount, DamageType type) {

@@ -71,11 +71,11 @@ public class ComponentMapImpl implements ComponentMap {
     public <T> T get(ItemComponent<? extends T> key) {
         Optional<T> optional = (Optional<T>) this.changedComponents.get(key);
 
-        if (optional.isPresent()) {
-            return optional.orElseGet(() -> this.baseComponents.get(key));
+        if (optional == null ||optional.isEmpty()) {
+            return this.baseComponents.get(key);
         }
+        return optional.orElseGet(() -> this.baseComponents.get(key));
 
-        return this.baseComponents.get(key);
     }
 
     @Nullable

@@ -10,6 +10,7 @@ import net.biryeongtrain.text_emulator.level.Scene;
 import net.biryeongtrain.text_emulator.level.scene.SceneAction;
 import net.biryeongtrain.text_emulator.registry.Registries;
 import net.biryeongtrain.text_emulator.scenario.ScenarioMeta;
+import net.biryeongtrain.text_emulator.swing.SimpleTextRPG;
 import net.biryeongtrain.text_emulator.utils.Util;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  */
 public class GameManager {
     private static GameManager instance;
+    private static final SimpleTextRPG UI = new SimpleTextRPG();
 
     private Player player;
     private volatile boolean isLoaded = false;
@@ -105,13 +107,16 @@ public class GameManager {
     public void goNextScene() {
         this.currentScene = this.nextRandomScene;
         this.nextRandomScene = null;
-
     }
 
     public void executeDecision(int index) {
 
         // TODO : give player or gameManager arg
         this.currentScene.decision().get(index).actions().forEach(SceneAction::execute);
+    }
+
+    public void shout(String... s) {
+        UI.addTextSerializations(s);
     }
 
     public RandomGenerator getRandom() {

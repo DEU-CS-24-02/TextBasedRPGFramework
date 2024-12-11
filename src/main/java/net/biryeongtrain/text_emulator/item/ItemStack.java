@@ -29,7 +29,7 @@ import java.util.Map;
 public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
     public static final Codec<ItemStack> CODEC = Codec.lazyInitialized(
             () -> RecordCodecBuilder.create((instance) -> instance.group(
-                    Registries.ITEM.getCodec().fieldOf("id").forGetter(ItemStack::getItem),
+                    Registries.ITEM.getCodec().optionalFieldOf("id", Items.AIR).forGetter(ItemStack::getItem),
                     Codecs.rangedInt(0, 99).fieldOf("count").forGetter(ItemStack::getCount),
                     ComponentChanges.CODEC.optionalFieldOf("components", ComponentChanges.EMPTY).forGetter(stack -> stack.components.getChanges())
             ).apply(instance, ItemStack::new)
@@ -53,7 +53,7 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
         this(item, count, new ComponentMapImpl(item.getComponents()));
     }
 
-    private ItemStack(Item item, int count, ComponentMapImpl components) {
+    public ItemStack(Item item, int count, ComponentMapImpl components) {
         this.base = item;
         this.count = count;
         this.components = components;
@@ -178,6 +178,55 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
         }
         this.set(ItemComponents.LAST_USED_TURN, currentTurn);
         return true;
+    }
+
+    public ItemStack split(int amount) {
+        int i = Math.min(amount, this.getCount());
+        ItemStack itemStack = this.copyWithCount(i);
+        this.decrement(i);
+        return itemStack;
+    }
+
+    public ItemStack copyWithCount(int count) {
+        if (this.isEmpty()) {
+            return EMPTY;
+        } else {
+            ItemStack itemStack = this.copy();
+            itemStack.setCount(count);
+            return itemStack;
+        }
+    }
+
+    public ItemStack copy() {
+        if (this.isEmpty()) {
+            return EMPTY;
+        } else {
+            return new ItemStack(this.getItem(), this.count, this.components.copy());
+        }
+    }
+
+    public void increment(int amount) {
+        this.setCount(this.getCount() + amount);
+    }
+
+    public void capCount(int maxCount) {
+        if (!this.isEmpty() && this.getCount() > maxCount) {
+            this.setCount(maxCount);
+        }
+    }
+
+    public void decrement(int amount) {
+        this.increment(-amount);
+    }
+
+    public ItemStack copyAndEmpty() {
+        if (this.isEmpty()) {
+            return EMPTY;
+        } else {
+            ItemStack itemStack = this.copy();
+            this.setCount(0);
+            return itemStack;
+        }
     }
 
     // 아이템 강화 관련 메서드

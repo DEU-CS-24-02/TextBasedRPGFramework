@@ -54,7 +54,7 @@ public class TextAreaPanel extends JPanel {
     }
 
     // 한 화면에 출력할 문자열들 삽입
-    public void setTextArray(String [] texts) {
+    public void setTextArray(String... texts) {
         TextBuffer.addAll(Arrays.asList(texts));
     }
 

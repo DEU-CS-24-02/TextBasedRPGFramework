@@ -1,7 +1,11 @@
 package net.biryeongtrain.text_emulator.swing;
 
+import net.biryeongtrain.text_emulator.utils.Util;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class SimpleTextRPG extends JFrame {
     Dimension centerSize = new Dimension(640, 685);
@@ -53,8 +57,10 @@ public class SimpleTextRPG extends JFrame {
         // 창 크기 설정 및 표시
         setSize(1280, 720);
         setVisible(true);
+        this.addWindowListener(new OnCloseEventHandler());
     }
-}
+
+
 
     public TextAreaPanel getTextAreaPanel() {
         return textAreaPanel;
@@ -70,6 +76,18 @@ public class SimpleTextRPG extends JFrame {
     }
     public EntityInfoPanel getEntityInfoPanel() {
         return entityInfoPanel;
+    }
+
+    public void addTextSerializations(String... str) {
+        this.textAreaPanel.setTextArray(str);
+    }
+
+    private static class OnCloseEventHandler extends WindowAdapter {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            Util.shutdownExecutors();
+            System.exit(0);
+        }
     }
 }
 

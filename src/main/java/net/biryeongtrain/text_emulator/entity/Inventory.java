@@ -17,6 +17,7 @@ public interface Inventory extends Clearable {
     ItemStack getStack(int slot);
     ItemStack removeStack(int slot);
     ItemStack removeStack(int slot, int amount);
+    boolean addStack(ItemStack stack);
     void setStack(int slot, ItemStack stack);
     default int getMaxCountPerStack() {
         return 99;

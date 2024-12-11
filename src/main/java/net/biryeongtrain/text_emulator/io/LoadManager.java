@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.Main;
+import net.biryeongtrain.text_emulator.entity.Player;
 import net.biryeongtrain.text_emulator.io.loader.*;
 import net.biryeongtrain.text_emulator.scenario.ScenarioMeta;
 
@@ -86,7 +87,13 @@ public class LoadManager {
 
     private void loadSaveMeta() {
         try {
-            String saveFile = Files.readString(Paths.get("save.json"));
+            if (!Files.exists(SAVE_PATH)) {
+                Main.LOGGER.info("Can't find save instance file. creating new save meta... (this is not an error!");
+                var meta = new SaveMeta(List.of(), new Player(), null, List.of());
+                GameManager.getInstance().setSaveMeta(meta);
+                return;
+            }
+            String saveFile = Files.readString(SAVE_PATH);
             JsonElement jsonElement = JsonParser.parseString(saveFile);
             var result = SaveMeta.CODEC.decode(JsonOps.INSTANCE, jsonElement);
             result.ifSuccess(pair -> {
@@ -117,8 +124,8 @@ public class LoadManager {
                     }
                     Main.LOGGER.info("Loading scenario : {}", path.getFileName());
                     try {
-                        var string = Files.readString(scenarioFile);
-                        var json = JsonParser.parseString(string);
+                        String string = Files.readString(scenarioFile);
+                        JsonElement json = JsonParser.parseString(string);
                         var result = ScenarioMeta.CODEC.decode(JsonOps.INSTANCE, json);
 
                         if (result.isError()) {
@@ -127,7 +134,7 @@ public class LoadManager {
                         }
 
                         var pair = result.getOrThrow();
-                        var meta = pair.getFirst();
+                        ScenarioMeta meta = pair.getFirst();
                         if (meta != null) {
                             Pair<ScenarioMeta, Path> pair1 = Pair.of(meta, path);
                             this.notSortedScenarios.add(pair1);
@@ -144,7 +151,7 @@ public class LoadManager {
 
             Main.LOGGER.info("Loaded {} scenarios", this.notSortedScenarios.size());
             this.notSortedScenarios.forEach(pair -> {
-                var meta = pair.first();
+                ScenarioMeta meta = pair.first();
                 Main.LOGGER.info("Scenario : {}-{} by {}", meta.id(), meta.version(), meta.author());
             });
         } else {

@@ -28,6 +28,9 @@ public class SimpleRegistry<T> implements Registry<T>{
 
     @Override
     public @Nullable Identifier getId(T value) {
+        if (value == null) {
+            return null;
+        }
         return this.entryToId.get(value).getValue();
     }
 

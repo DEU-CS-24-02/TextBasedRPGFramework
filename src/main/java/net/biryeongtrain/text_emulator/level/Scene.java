@@ -15,7 +15,7 @@ import org.apache.logging.log4j.util.Strings;
 import java.util.List;
 import java.util.Objects;
 
-public final class Scene {
+public class Scene {
     public static Codec<Scene> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(Scene::id),
             SceneSelector.CODEC.fieldOf("selector").forGetter(Scene::selector),
