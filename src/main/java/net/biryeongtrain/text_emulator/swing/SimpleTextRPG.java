@@ -6,6 +6,12 @@ import java.awt.*;
 public class SimpleTextRPG extends JFrame {
     Dimension centerSize = new Dimension(640, 685);
 
+    private TextAreaPanel textAreaPanel;
+    private PlayerInfoPanel playerInfoPanel;
+    private PlayerInventoryPanel playerInventoryPanel;
+    private SceneInfoPanel sceneInfoPanel;
+    private EntityInfoPanel entityInfoPanel;
+
     public SimpleTextRPG() {
         // 창 설정
         setTitle("Simple Text RPG");
@@ -15,7 +21,8 @@ public class SimpleTextRPG extends JFrame {
         Container c = getContentPane();
 
         // 텍스트 패널 위치 및 크기 설정
-        TextAreaPanel textAreaPanel = new TextAreaPanel();
+        textAreaPanel = new TextAreaPanel();
+
         textAreaPanel.setSize(centerSize);
         textAreaPanel.setLocation((1280 - centerSize.width) / 2,0);
         c.add(textAreaPanel);
@@ -24,21 +31,45 @@ public class SimpleTextRPG extends JFrame {
         JPanel PlayerPanel = new JPanel(new GridLayout(2,1,1,1));
         PlayerPanel.setSize(centerSize.width/2 - 1, centerSize.height);
         add(PlayerPanel);
-        PlayerPanel.add(new PlayerInfoPanel());
-        PlayerPanel.add(new PlayerInventoryPanel());
+
+        playerInfoPanel = new PlayerInfoPanel();
+        playerInventoryPanel = new PlayerInventoryPanel();
+        PlayerPanel.add(playerInfoPanel);
+        PlayerPanel.add(playerInventoryPanel);
+
 
         // 씬 및 엔티티 정보 패널 위치 및 크기 설정
         JPanel ScenePanel = new JPanel(new GridLayout(2,1,1,1));
         ScenePanel.setSize(centerSize.width/2 - 1, centerSize.height);
         ScenePanel.setLocation(1280 - centerSize.width / 2 +1,0);
         add(ScenePanel);
-        ScenePanel.add(new SceneInfoPanel());
-        ScenePanel.add(new EntityInfoPanel());
+
+        sceneInfoPanel = new SceneInfoPanel();
+        entityInfoPanel = new EntityInfoPanel();
+        ScenePanel.add(sceneInfoPanel);
+        ScenePanel.add(entityInfoPanel);
 
 
         // 창 크기 설정 및 표시
         setSize(1280, 720);
         setVisible(true);
+    }
+}
+
+    public TextAreaPanel getTextAreaPanel() {
+        return textAreaPanel;
+    }
+    public PlayerInfoPanel getPlayerInfoPanel() {
+        return playerInfoPanel;
+    }
+    public PlayerInventoryPanel getPlayerInventoryPanel() {
+        return playerInventoryPanel;
+    }
+    public SceneInfoPanel getSceneInfoPanel() {
+        return sceneInfoPanel;
+    }
+    public EntityInfoPanel getEntityInfoPanel() {
+        return entityInfoPanel;
     }
 }
 
