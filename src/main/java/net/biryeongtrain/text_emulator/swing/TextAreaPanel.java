@@ -20,6 +20,8 @@ public class TextAreaPanel extends JPanel {
     private Queue<String> TextBuffer; // 씬과 텍스트 데이터를 저장
     private static JPanel ButtonPanel;
     private Queue<Character> CharBuffer;
+    private boolean isTextAnimationRun = false;
+    private boolean isExecutionButton =
     private String[] testText = {
             "험난한 여정이 계속되는 가운데, 당신은 외진 길에서 상인을 만났습니다.",
             "그는 당신을 보고, 싸게 해줄태니 아이템을 조금 보고 가라고 합니다.",
@@ -60,7 +62,7 @@ public class TextAreaPanel extends JPanel {
     }
 
     // 버튼 패널 초기화
-    public void clearButtons() {
+    static public void clearButtons() {
         ButtonPanel.removeAll();
         ButtonPanel.setLayout(new GridLayout(1,1));
     }
@@ -71,6 +73,7 @@ public class TextAreaPanel extends JPanel {
         public Button(SceneDecision decision) {
             ButtonPanel.setLayout(new GridLayout(ButtonPanel.getComponentCount() + 1,1));
             JButton newButton = new JButton();
+
             newButton.setText(decision.text());
             newButton.addActionListener(e -> buttonExe(decision.actions()));
             ButtonPanel.add(newButton);
@@ -79,6 +82,7 @@ public class TextAreaPanel extends JPanel {
     }
 
      static private void buttonExe(List<SceneAction> actions) {
+        clearButtons();
         for (SceneAction action : actions) {
             action.execute();
         }
@@ -93,6 +97,7 @@ public class TextAreaPanel extends JPanel {
 
     // 한 화면에 출력할 문자열들 삽입
     public void setTextArray(String... texts) {
+        isTextAnimationRun = true;
         TextBuffer.addAll(Arrays.asList(texts));
     }
 
@@ -143,6 +148,8 @@ public class TextAreaPanel extends JPanel {
             if (!CharBuffer.isEmpty()) {
                 textArea.append(String.valueOf(CharBuffer.poll())); // 한 글자씩 출력
             } else {
+                if(TextBuffer.isEmpty())
+                    isTextAnimationRun = false;
                 timer.stop(); // 모든 글자를 출력하면 타이머 중지
             }
 
