@@ -7,6 +7,7 @@ import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.entity.damage.DamageType;
 import net.biryeongtrain.text_emulator.io.Serializable;
 import net.biryeongtrain.text_emulator.registry.Registries;
+import net.biryeongtrain.text_emulator.utils.MathHelper;
 
 public class Entity implements Serializable<Entity> {
     public static Codec<Entity> CODEC = Codec.lazyInitialized(
@@ -55,7 +56,7 @@ public class Entity implements Serializable<Entity> {
     }
 
     public void addHealth(float value) {
-        this.health = Math.clamp(health + value, 0, maxHealth);
+        this.health = MathHelper.clamp(health + value, 0f, maxHealth);
         if (health == 0) {
             this.die();
         }
