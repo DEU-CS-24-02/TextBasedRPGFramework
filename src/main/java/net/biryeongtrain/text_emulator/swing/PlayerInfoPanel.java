@@ -100,8 +100,8 @@ public class PlayerInfoPanel extends JPanel {
         Player player = GameManager.getInstance().getPlayer();
         PlayerInventory playerInventory = player.getInventory();
         playerHealthDataLabel.setText(Math.round(player.getHealth()) + "");
-        playerKarmaDataLabel.setText(playerInventory.getGold() + "");
-        playerGoldDataLabel.setText(playerInventory.getReputation() + "");
+        playerKarmaDataLabel.setText(playerInventory.getReputation() + "");
+        playerGoldDataLabel.setText(playerInventory.getGold() + "");
         playerDamageDataLabel.setText(Math.round(player.getDamage()) + "");
         playerArmorDataLabel.setText(Math.round(player.getArmor()) + "");
     }
