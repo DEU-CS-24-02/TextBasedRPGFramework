@@ -96,7 +96,7 @@ public class TextAreaPanel extends JPanel {
         }
     }
 
-     static private void buttonExe(List<SceneAction> actions) {
+    static private void buttonExe(List<SceneAction> actions) {
         isExecutionButton = true;
         clearButtons();
         for (SceneAction action : actions) {
