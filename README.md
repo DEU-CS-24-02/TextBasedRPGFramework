@@ -1,5 +1,7 @@
 <h1>Text4Adventure</h1>
 
+https://charming-quokka-101.notion.site/Text4Adventure-10e45544e27c80529733e86ae096ca26?pvs=74
+
 Text4Adventure은 자바로 제작된 텍스트 기반 RPG 프레임워크입니다.
 
 <h2>기능</h2>
