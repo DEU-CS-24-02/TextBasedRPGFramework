@@ -12,13 +12,13 @@ public enum Operator implements StringIdentifiable {
         public <T> boolean compare(Unit unit, T value2) {
             switch (unit) {
                 case KARMA -> {
-                    return Integer.parseInt(value2.toString()) < Integer.parseInt(Unit.KARMA.getPlayerValue());
+                    return Long.parseLong(Unit.KARMA.getPlayerValue()) < Long.parseLong(value2.toString());
                 }
                 case GOLD -> {
-                    return Integer.parseInt(value2.toString()) < Integer.parseInt(Unit.GOLD.getPlayerValue());
+                    return Long.parseLong(Unit.GOLD.getPlayerValue()) < Long.parseLong(value2.toString());
                 }
                 case HEALTH -> {
-                    return Integer.parseInt(value2.toString()) < Integer.parseInt(Unit.HEALTH.getPlayerValue());
+                    return Float.parseFloat(Unit.HEALTH.getPlayerValue()) < Float.parseFloat(value2.toString());
                 }
             }
             return false;
@@ -28,13 +28,13 @@ public enum Operator implements StringIdentifiable {
         public <T> boolean compare(Unit unit, T value2) {
             switch (unit) {
                 case KARMA -> {
-                    return Integer.parseInt(value2.toString()) >= Integer.parseInt(Unit.KARMA.getPlayerValue());
+                    return Long.parseLong(Unit.KARMA.getPlayerValue()) >= Long.parseLong(value2.toString());
                 }
                 case GOLD -> {
-                    return Integer.parseInt(value2.toString()) >= Integer.parseInt(Unit.GOLD.getPlayerValue());
+                    return Long.parseLong(Unit.GOLD.getPlayerValue()) >= Long.parseLong(value2.toString());
                 }
                 case HEALTH -> {
-                    return Integer.parseInt(value2.toString()) >= Integer.parseInt(Unit.HEALTH.getPlayerValue());
+                    return Float.parseFloat(Unit.HEALTH.getPlayerValue()) >= Float.parseFloat(value2.toString());
                 }
             }
             return false;
@@ -44,13 +44,13 @@ public enum Operator implements StringIdentifiable {
         public <T> boolean compare(Unit unit, T value2) {
             switch (unit) {
                 case KARMA -> {
-                    return Integer.parseInt(value2.toString()) <= Integer.parseInt(Unit.KARMA.getPlayerValue());
+                    return Long.parseLong(Unit.KARMA.getPlayerValue()) <= Long.parseLong(value2.toString());
                 }
                 case GOLD -> {
-                    return Integer.parseInt(value2.toString()) <= Integer.parseInt(Unit.GOLD.getPlayerValue());
+                    return Long.parseLong(Unit.GOLD.getPlayerValue()) <= Long.parseLong(value2.toString());
                 }
                 case HEALTH -> {
-                    return Integer.parseInt(value2.toString()) <= Integer.parseInt(Unit.HEALTH.getPlayerValue());
+                    return Float.parseFloat(Unit.HEALTH.getPlayerValue()) <= Float.parseFloat(value2.toString());
                 }
             }
             return false;
@@ -60,13 +60,13 @@ public enum Operator implements StringIdentifiable {
         public <T> boolean compare(Unit unit, T value2) {
             switch (unit) {
                 case KARMA -> {
-                    return Integer.parseInt(value2.toString()) > Integer.parseInt(Unit.KARMA.getPlayerValue());
+                    return Long.parseLong(Unit.KARMA.getPlayerValue()) > Long.parseLong(value2.toString());
                 }
                 case GOLD -> {
-                    return Integer.parseInt(value2.toString()) > Integer.parseInt(Unit.GOLD.getPlayerValue());
+                    return Long.parseLong(Unit.GOLD.getPlayerValue()) > Long.parseLong(value2.toString());
                 }
                 case HEALTH -> {
-                    return Integer.parseInt(value2.toString()) > Integer.parseInt(Unit.HEALTH.getPlayerValue());
+                    return Float.parseFloat(Unit.HEALTH.getPlayerValue()) > Float.parseFloat(value2.toString());
                 }
             }
             return false;
@@ -76,13 +76,13 @@ public enum Operator implements StringIdentifiable {
         public <T> boolean compare(Unit unit, T value2) {
             switch (unit) {
                 case KARMA -> {
-                    return Integer.parseInt(value2.toString()) == Integer.parseInt(Unit.KARMA.getPlayerValue());
+                    return Long.parseLong(value2.toString()) == Long.parseLong(Unit.KARMA.getPlayerValue());
                 }
                 case GOLD -> {
-                    return Integer.parseInt(value2.toString()) == Integer.parseInt(Unit.GOLD.getPlayerValue());
+                    return Long.parseLong(value2.toString()) == Long.parseLong(Unit.GOLD.getPlayerValue());
                 }
                 case HEALTH -> {
-                    return Integer.parseInt(value2.toString()) == Integer.parseInt(Unit.HEALTH.getPlayerValue());
+                    return Float.parseFloat(value2.toString()) == Float.parseFloat(Unit.HEALTH.getPlayerValue());
                 }
             }
             return false;

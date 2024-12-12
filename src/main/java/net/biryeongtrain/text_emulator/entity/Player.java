@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.item.Item;
 import net.biryeongtrain.text_emulator.item.ItemStack;
+import net.biryeongtrain.text_emulator.level.Scenes;
 
 public class Player extends Entity {
     public static Codec<Player> CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(
@@ -28,7 +29,10 @@ public class Player extends Entity {
         this.inventory = inventory;
     }
 
-
+    @Override
+    public void die() {
+        GameManager.getInstance().goToScene(Scenes.DEAD_SCENE.id());
+    }
 
     public void addGold(int value) {
         this.inventory.addGold(value);

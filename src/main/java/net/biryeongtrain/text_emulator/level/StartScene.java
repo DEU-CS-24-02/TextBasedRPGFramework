@@ -35,12 +35,13 @@ public class StartScene extends Scene {
         List<SceneDecision> decisions = new ArrayList<>();
         SceneAction action1 = new SceneAction(ActionType.GIVE, Unit.HEALTH, "50");
         SceneAction action2 = new SceneAction(ActionType.GIVE, Unit.GOLD, "100");
-        SceneDecision decision1 = new SceneDecision("전사를 택한다.", "무기를 얻습니다.", List.of(action1, action2));
+        SceneAction action3 = new SceneAction(ActionType.GOTO, Unit.EMPTY, "random");
+        SceneDecision decision1 = new SceneDecision("전사를 택한다.", "무기를 얻습니다.", List.of(action1, action2, action3));
         decisions.add(decision1);
 
-        SceneAction action3 = new SceneAction(ActionType.GIVE, Unit.HEALTH, "-50");
-        SceneAction action4 = new SceneAction(ActionType.GIVE, Unit.GOLD, "150");
-        SceneDecision decision2 = new SceneDecision("마법사를 택한다.", "한번의 공격, 한번의 순간.", List.of(action3, action4));
+        SceneAction action4 = new SceneAction(ActionType.GIVE, Unit.HEALTH, "-50");
+        SceneAction action5 = new SceneAction(ActionType.GIVE, Unit.GOLD, "150");
+        SceneDecision decision2 = new SceneDecision("마법사를 택한다.", "한번의 공격, 한번의 순간.", List.of(action4, action5, action3));
         decisions.add(decision2);
         return decisions;
     }

@@ -56,6 +56,9 @@ public class Entity implements Serializable<Entity> {
 
     public void addHealth(float value) {
         this.health = Math.clamp(health + value, 0, maxHealth);
+        if (health == 0) {
+            this.die();
+        }
     }
 
     public float getArmor() {
@@ -72,11 +75,13 @@ public class Entity implements Serializable<Entity> {
     }
 
     public void damage(float amount, DamageType type) {
-        // TODO: 2024-11-21 Implement damage calculation
+        GameManager.getInstance().shout(type.damageDisplayFormat.formatted(amount));
+        this.addHealth(-amount);
     }
 
     public void die() {
-        // TODO: 2024-11-21 Implement death
+        this.isAlive = false;
+        this.dropToPlayer();
     }
 
     @Override
@@ -87,5 +92,11 @@ public class Entity implements Serializable<Entity> {
     @Override
     public Entity serialize(JsonElement element) {
         return null;
+    }
+
+    public void dropToPlayer() {
+        Player player = GameManager.getInstance().getPlayer();
+        LootTableInstance instance = this.type.getLootTableManager().getLootTable();
+        instance.items().forEach(item -> {player.getInventory().addStack(item);});
     }
 }

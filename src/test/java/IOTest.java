@@ -259,6 +259,7 @@ public class IOTest {
             try {
                 Files.createDirectories(itemPath.getParent());
                 var itemJson = Item.CODEC.encodeStart(JsonOps.INSTANCE, item).result().get();
+                itemJson.getAsJsonObject().addProperty("id", Registries.ITEM.getId(item).toString());
                 Files.writeString(itemPath, itemJson.toString(), StandardCharsets.UTF_8);
             } catch (IOException e) {
                 LOGGER.error(e.getMessage(), e);
@@ -268,6 +269,7 @@ public class IOTest {
         if (!Files.exists(item2Path)) {
             try {
                 var itemJson = Item.CODEC.encodeStart(JsonOps.INSTANCE, item2).result().get();
+                itemJson.getAsJsonObject().addProperty("id", Registries.ITEM.getId(item2).toString());
                 Files.writeString(item2Path, itemJson.toString(), StandardCharsets.UTF_8);
             } catch (IOException e) {
                 LOGGER.error(e.getMessage(), e);

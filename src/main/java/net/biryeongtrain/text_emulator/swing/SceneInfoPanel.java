@@ -7,8 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SceneInfoPanel extends JPanel {
-    JLabel SceneNameDataLabel;
-    JLabel SceneWeightDataLabel;
+    JLabel SceneNameDataLabel = new JLabel("");
+    JLabel SceneWeightDataLabel = new JLabel("");
 
   public SceneInfoPanel() {
         this.setBackground(Color.BLACK);

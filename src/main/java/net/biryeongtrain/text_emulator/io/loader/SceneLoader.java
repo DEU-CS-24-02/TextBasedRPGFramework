@@ -27,9 +27,9 @@ public class SceneLoader implements ContentsLoader<Scene>{
                                 var scene = pair.getFirst();
                                 Registry.register(getRegistry(), scene.id(), scene);
 
-                                Main.LOGGER.info("          - Loaded entity type: {}", scene.id());
+                                Main.LOGGER.info("          - Loaded scene type: {}", scene.id());
                             } catch (Exception e) {
-                                Main.LOGGER.error("Failed to load entity type: {}", sceneFile);
+                                Main.LOGGER.error("Failed to load scene type: {}", sceneFile);
                                 Main.LOGGER.error(e.toString());
                             }
                         }

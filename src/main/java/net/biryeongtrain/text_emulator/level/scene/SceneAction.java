@@ -18,4 +18,44 @@ public record SceneAction(ActionType type,
         this.type.execute(GameManager.getInstance(), this.unit, this.value);
     }
 
+    public static class Builder {
+        ActionType type;
+        Unit unit;
+        String value;
+
+        private Builder() {}
+
+        public static Builder create() {
+            return new Builder();
+        }
+
+        public Builder type(ActionType type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder unit(Unit unit) {
+            this.unit = unit;
+            return this;
+        }
+
+        public Builder value(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public SceneAction build() {
+            if (type == null) {
+                throw new IllegalArgumentException("type cannot be null");
+            }
+            if (type == ActionType.TAKE || type == ActionType.GIVE) {
+                unit = Unit.EMPTY;
+            }
+
+            if (value == null || value.isEmpty()) {
+                throw new IllegalArgumentException("value cannot be empty");
+            }
+            return new SceneAction(type, unit, value);
+        }
+    }
 }

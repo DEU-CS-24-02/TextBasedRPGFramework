@@ -59,7 +59,10 @@ public enum ActionType implements StringIdentifiable {
         @Override
         public void execute(GameManager instance, Unit unit, String value) {
             if (value.equals("random")) {
+                instance.setSceneAsCompleted();
                 instance.searchNextScene();
+                instance.selectNextRandomScene();
+                instance.goNextScene();
                 return;
             }
             if (!ActionType.validateIdentifier(value)) {

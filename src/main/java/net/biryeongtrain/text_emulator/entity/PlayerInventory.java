@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.item.Item;
 import net.biryeongtrain.text_emulator.item.ItemStack;
 import net.biryeongtrain.text_emulator.utils.Util;
@@ -38,7 +39,7 @@ public class PlayerInventory implements Inventory {
         return this.stacks.size();
     }
 
-    public List<ItemStack> getStacks() {
+    public ImmutableList<ItemStack> getStacks() {
         return ImmutableList.copyOf(this.stacks);
     }
 
@@ -98,6 +99,7 @@ public class PlayerInventory implements Inventory {
         if (this.containsAny(stack -> stack.getItem() == item)) {
             var that = this.stacks.stream().filter(stack -> stack.getItem() == item).findFirst().get();
             that.decrement(1);
+            this.markDirty();
             return true;
         }
         return false;
@@ -128,11 +130,12 @@ public class PlayerInventory implements Inventory {
             return false;
         }
         this.stacks.add(stack);
+        this.markDirty();
         return true;
     }
 
     public void markDirty() {
-        // TODO : re draw inventory
+        GameManager.UI.getPlayerInventoryPanel().UpdateData();
     }
 
     public long getReputation() {

@@ -1,7 +1,6 @@
 package net.biryeongtrain.text_emulator;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.biryeongtrain.text_emulator.entity.Entity;
 import net.biryeongtrain.text_emulator.entity.EntityType;
 import net.biryeongtrain.text_emulator.entity.Player;
 import net.biryeongtrain.text_emulator.entity.damage.DamageType;
@@ -79,11 +78,21 @@ public class GameManager {
         return isLoaded;
     }
 
-    public void selectNextScene() {
-        var stream = this.selectableScene.stream().filter(Scene::isAlways);
+    public boolean isCompleted(Identifier id) {
+        return completedScenes.contains(id);
+    }
+
+    public void selectNextRandomScene() {
+        var stream = this.selectableScene
+                .stream()
+                .filter(Scene::isAlways);
         var optionalScene = stream.findAny();
         if (optionalScene.isPresent()) {
             this.nextRandomScene = optionalScene.get();
+            return;
+        }
+        if (selectableScene.isEmpty()) {
+            this.nextRandomScene = Scenes.END_SCENE;
             return;
         }
         this.nextRandomScene = selectableScene.get(rndGenerator.nextInt(selectableScene.size()));
@@ -125,6 +134,11 @@ public class GameManager {
     public void goNextScene() {
         this.currentScene = this.nextRandomScene;
         this.nextRandomScene = null;
+        UI.getTextAreaPanel().goNextScene();
+    }
+
+    public void setSceneAsCompleted() {
+        this.completedScenes.add(currentScene.id());
     }
 
     public void executeDecision(int index) {
@@ -138,7 +152,10 @@ public class GameManager {
     }
 
     public void goToScene(Identifier id) {
+        this.completedScenes.add(id);
         this.nextRandomScene = Registries.SCENE.get(id);
+        this.goNextScene();
+        UI.getTextAreaPanel().goNextScene();
     }
 
     public void startCombat(EntityType type) {
@@ -153,6 +170,7 @@ public class GameManager {
         this.shout("적을 처치하지 못했습니다.");
         player.damage(type.getDefaultDamage(), DamageType.ENTITY);
     }
+
 
     public RandomGenerator getRandom() {
         return this.rndGenerator;

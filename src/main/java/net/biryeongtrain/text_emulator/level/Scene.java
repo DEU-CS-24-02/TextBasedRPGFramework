@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.entity.Player;
 import net.biryeongtrain.text_emulator.level.scene.Condition;
 import net.biryeongtrain.text_emulator.level.scene.SceneDecision;
@@ -69,7 +70,7 @@ public class Scene {
     }
 
     public boolean canSelected(Player player) {
-        return selector.checkCondition(player);
+        return !GameManager.getInstance().isCompleted(this.id) && selector.checkCondition(player);
     }
 
     @Override
@@ -88,5 +89,14 @@ public class Scene {
             list.add(i, Pair.of(String.valueOf(i), conversations.get(i)));
         }
         return list;
+    }
+
+    public static class Builder {
+        Identifier id;
+        SceneSelector selector;
+        List<Pair<String,String>> conversations;
+        List<String> conversationArrayList;
+        List<SceneDecision> decision;
+        private Builder() {}
     }
 }

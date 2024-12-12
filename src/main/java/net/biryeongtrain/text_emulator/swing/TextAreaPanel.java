@@ -9,6 +9,8 @@ import net.biryeongtrain.text_emulator.level.scene.Unit;
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
@@ -18,7 +20,7 @@ public class TextAreaPanel extends JPanel {
     Timer timer;
     private JTextArea textArea; // 텍스트를 출력할 영역
     private Queue<String> TextBuffer; // 씬과 텍스트 데이터를 저장
-    private static JPanel ButtonPanel;
+    private JPanel ButtonPanel;
     private Queue<Character> CharBuffer;
     private static boolean isTextAnimationRun = false;
     private static boolean isExecutionButton = false;
@@ -42,7 +44,8 @@ public class TextAreaPanel extends JPanel {
 
         // 버튼 페널 추가
         ButtonPanel = new JPanel();
-        ButtonPanel.setLayout(new GridLayout(1,1));
+        ButtonPanel.setLayout(new GridLayout(1, 1));
+        ButtonPanel.setBackground(new Color(0xF5F5DC));
         add(ButtonPanel, BorderLayout.SOUTH);
 
 
@@ -50,14 +53,25 @@ public class TextAreaPanel extends JPanel {
         initializeScenes();
 
         // 테스트용 문자열 삽입
-        setTextArray(GameManager.getInstance().getSceneTexts());
+        goNextScene();
         // 버튼 생성 테스트
-        new Button(textDecision);
+
         // 씬 출력 테스트
         moveToNextText();
-
+//        new Button(this, GameManager.getInstance().getCurrentScene().decision().get(0));
         setSize(1920, 1080);
         setVisible(true);
+
+    }
+
+    public void goNextScene() {
+        ButtonPanel.removeAll();
+        ButtonPanel.setVisible(false);
+        this.setTextArray(GameManager.getInstance().getSceneTexts());
+        GameManager.getInstance().getCurrentScene().decision().forEach(decision -> new Button(this, decision));
+        if (timer != null) {
+            timer.restart();
+        }
     }
 
     /**
@@ -72,31 +86,35 @@ public class TextAreaPanel extends JPanel {
     public boolean isTextAnimationRun() {
         return isTextAnimationRun;
     }
+
     public boolean isExecutionButton() {
         return isExecutionButton;
     }
 
     // 버튼 패널 초기화
-    static public void clearButtons() {
+    public void clearButtons() {
         ButtonPanel.removeAll();
-        ButtonPanel.setLayout(new GridLayout(1,1));
+        ButtonPanel.setLayout(new GridLayout(1, 1));
     }
 
     // 버튼 추가
-    static class Button extends JButton {
+    public static class Button extends JButton {
         SceneDecision decision;
-        public Button(SceneDecision decision) {
-            ButtonPanel.setLayout(new GridLayout(ButtonPanel.getComponentCount() + 1,1));
+
+        public Button(TextAreaPanel panel, SceneDecision decision) {
+            panel.ButtonPanel.setLayout(new GridLayout(panel.ButtonPanel.getComponentCount() + 1, 1));
             JButton newButton = new JButton();
 
             newButton.setText(decision.text());
-            newButton.addActionListener(e -> buttonExe(decision.actions()));
-            ButtonPanel.add(newButton);
+            newButton.addActionListener(e -> panel.buttonExe(decision.actions()));
+            panel.ButtonPanel.add(newButton);
             this.decision = decision;
+            this.setVisible(true);
         }
     }
 
-    static private void buttonExe(List<SceneAction> actions) {
+    private void buttonExe(List<SceneAction> actions) {
+        this.initializeScenes();
         isExecutionButton = true;
         clearButtons();
         for (SceneAction action : actions) {
@@ -129,7 +147,7 @@ public class TextAreaPanel extends JPanel {
     // 남은 문자열 텍스트 에니메이션 스킵
     private void skipCurrentText() {
         timer.stop();
-        while(!CharBuffer.isEmpty()) {
+        while (!CharBuffer.isEmpty()) {
             textArea.append(String.valueOf(CharBuffer.poll()));
         }
     }
@@ -143,21 +161,28 @@ public class TextAreaPanel extends JPanel {
     // 다음 텍스트 출력
     private void moveToNextText() {
         // 버퍼에 문자가 남아있으면 남은 문자열의 텍스트 애니메이션 스킵
-        if(!CharBuffer.isEmpty()) {
+        if (!CharBuffer.isEmpty()) {
+            this.ButtonPanel.setVisible(false);
             skipCurrentText();
             return;
         }
         // 모두 출력했으면 리턴
-        if(TextBuffer.isEmpty()) {
+        if (TextBuffer.isEmpty()) {
+            this.ButtonPanel.setVisible(true);
             return;
         }
+
+        if (isExecutionButton && TextBuffer.size() == GameManager.getInstance().getSceneTexts().length) {
+            isExecutionButton = false;
+            textArea.setText("");
+        }
         // 새로운 씬 출력
-        displayTextWithEffect(TextBuffer.poll()+"\n");
+        displayTextWithEffect(TextBuffer.poll() + "\n");
     }
 
     // 텍스트 애니메이션 구현
     private void displayTextWithEffect(String text) {
-        timer  = new Timer(50, null); // 50ms 간격으로 글자 출력
+        timer = new Timer(50, null); // 50ms 간격으로 글자 출력
         final int[] index = {0}; // 현재 출력할 글자의 인덱스
         addText(text);
 
@@ -165,8 +190,10 @@ public class TextAreaPanel extends JPanel {
             if (!CharBuffer.isEmpty()) {
                 textArea.append(String.valueOf(CharBuffer.poll())); // 한 글자씩 출력
             } else {
-                if(TextBuffer.isEmpty())
+                if (TextBuffer.isEmpty()) {
                     isTextAnimationRun = false;
+                    this.ButtonPanel.setVisible(true);
+                }
                 timer.stop(); // 모든 글자를 출력하면 타이머 중지
             }
 

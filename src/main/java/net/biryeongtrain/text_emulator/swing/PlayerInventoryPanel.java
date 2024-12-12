@@ -2,6 +2,8 @@ package net.biryeongtrain.text_emulator.swing;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import net.biryeongtrain.text_emulator.GameManager;
@@ -38,14 +40,15 @@ public class PlayerInventoryPanel extends JPanel {
             newButton.setText(stack.getItem().getName() + " " + stack.getCount() + "개");
             newButton.addActionListener(e -> stack.Use());
             scrollPane.add(newButton);
+            setVisible(true);
         }
     }
 
     public void UpdateData() {
         Player player = GameManager.getInstance().getPlayer();
         PlayerInventory playerInventory = player.getInventory();
-        List<ItemStack> stacks = playerInventory.getStacks();
-        stacks.sort((s1,s2) -> s1.getItem().getName().compareTo(s2.getItem().getName()));
+        List<ItemStack> stacks = new ArrayList<>(playerInventory.getStacks());
+        stacks.sort(Comparator.comparing(s -> s.getItem().getName()));
         for (ItemStack Item : stacks)
             new ItemUseButton(Item);
     }
