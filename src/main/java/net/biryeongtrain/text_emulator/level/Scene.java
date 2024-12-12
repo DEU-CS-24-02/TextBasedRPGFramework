@@ -94,9 +94,47 @@ public class Scene {
     public static class Builder {
         Identifier id;
         SceneSelector selector;
-        List<Pair<String,String>> conversations;
-        List<String> conversationArrayList;
+        List<Pair<String,String>> conversations = new ArrayList<>();
         List<SceneDecision> decision;
         private Builder() {}
+
+        public static Builder create() {
+            return new Builder();
+        }
+
+        public Builder id(Identifier id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder selector(SceneSelector selector) {
+            this.selector = selector;
+            return this;
+        }
+
+        public Builder selector(SceneSelector.Builder selector) {
+            this.selector = selector.build();
+            return this;
+        }
+
+        public Builder conversations(String... conversations) {
+            var list = Scene.conversations(List.of(conversations));
+            this.conversations = list;
+            return this;
+        }
+
+        public Builder decisions(SceneDecision... decision) {
+            this.decision = new ArrayList<>(List.of(decision));
+            return this;
+        }
+
+        public Scene build() {
+            Objects.requireNonNull(id);
+            Objects.requireNonNull(selector);
+            Objects.requireNonNull(decision);
+
+            return new Scene(id, selector, conversations, decision);
+        }
+
     }
 }

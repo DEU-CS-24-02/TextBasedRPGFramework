@@ -240,8 +240,37 @@ public class IOTest {
                                 new SceneAction(ActionType.PRINT, Unit.EMPTY, "당신은 열쇠를 버렸습니다."),
                                 new SceneAction(ActionType.GOTO, Unit.EMPTY, "random")
                         ))
-                        )
+                )
         );
+
+        Scene scene3 = Scene.Builder.create()
+                .id(Identifier.of("showcase_scenario", "falling_stones"))
+                .selector(SceneSelector
+                        .Builder.create()
+                        .condition(Condition.ALWAYS)
+                        .weight(100)
+                )
+                .conversations("길을 가던 도중 낙석이 떨어집니다.", "당신은 피할 새도 없이 낙석에 맞아버렸습니다.")
+                .decisions(SceneDecision.Builder.create()
+                        .display("아야!")
+                        .actions(SceneAction.Builder.create()
+                                        .type(ActionType.PRINT)
+                                        .value("당신은 낙석에 피해를 입었습니다.")
+                                        .build(),
+                                SceneAction.Builder.create()
+                                        .type(ActionType.TAKE)
+                                        .unit(Unit.HEALTH)
+                                        .value("5")
+                                        .build(),
+                                SceneAction.Builder.create()
+                                        .type(ActionType.GOTO)
+                                        .value("random")
+                                        .build()
+                        )
+                        .build()
+                )
+                .build();
+
 
         Registry.register(Registries.SCENE, giveawayScene.id(), giveawayScene);
         Registry.register(Registries.SCENE, scene.id(), scene);
