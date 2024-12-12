@@ -31,6 +31,7 @@ public class PlayerInventoryPanel extends JPanel {
         scrollPane.setLocation(0, 50);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
         add(scrollPane);
     }
 
