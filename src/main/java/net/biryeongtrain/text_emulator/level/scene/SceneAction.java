@@ -2,7 +2,7 @@ package net.biryeongtrain.text_emulator.level.scene;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.checkerframework.checker.units.qual.C;
+import net.biryeongtrain.text_emulator.GameManager;
 
 public record SceneAction(ActionType type,
                           Unit unit,
@@ -15,7 +15,7 @@ public record SceneAction(ActionType type,
     ).apply(instance, SceneAction::new));
 
     public void execute() {
-        this.type.execute(this.unit, this.value);
+        this.type.execute(GameManager.getInstance(), this.unit, this.value);
     }
 
 }

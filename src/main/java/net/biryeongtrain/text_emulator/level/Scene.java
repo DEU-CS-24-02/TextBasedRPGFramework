@@ -12,31 +12,32 @@ import net.biryeongtrain.text_emulator.utils.collections.DefaultedList;
 import net.biryeongtrain.text_emulator.utils.identifier.Identifier;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Scene {
-    public static Codec<Scene> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static Codec<Scene> CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(Scene::id),
             SceneSelector.CODEC.fieldOf("selector").forGetter(Scene::selector),
-            Codec.compoundList(Codec.INT, Codec.STRING).fieldOf("conversations").forGetter(Scene::conversations),
+            Codec.compoundList(Codec.STRING, Codec.STRING).fieldOf("conversations").forGetter(Scene::conversations),
             SceneDecision.CODEC.listOf().fieldOf("decision").forGetter(Scene::decision)
-    ).apply(instance, Scene::new));
+    ).apply(instance, Scene::new)));
 
     private final Identifier id;
     private final SceneSelector selector;
-    private final List<Pair<Integer,String>> conversations;
+    private final List<Pair<String,String>> conversations;
     private final List<String> conversationArrayList;
     private final List<SceneDecision> decision;
 
-    public Scene(Identifier id, SceneSelector selector, List<Pair<Integer,String>> conversations, List<SceneDecision> decision) {
+    public Scene(Identifier id, SceneSelector selector, List<Pair<String,String>> conversations, List<SceneDecision> decision) {
         this.id = id;
         this.selector = selector;
         this.conversations = conversations;
         this.decision = decision;
         this.conversationArrayList = DefaultedList.ofSize(conversations.size(), Strings.EMPTY);
         conversations.forEach(pair -> {
-            conversationArrayList.set(pair.getFirst(), pair.getSecond());
+            conversationArrayList.set(Integer.parseInt(pair.getFirst()), pair.getSecond());
         });
     }
 
@@ -44,14 +45,14 @@ public class Scene {
         return id;
     }
 
-    private SceneSelector selector() {
+    public SceneSelector selector() {
         return selector;
     }
     public boolean isAlways() {
         return this.selector.condition() == Condition.ALWAYS;
     }
 
-    private List<Pair<Integer,String>> conversations() {
+    private List<Pair<String,String>> conversations() {
         return ImmutableList.copyOf(conversations);
     }
 
@@ -81,5 +82,11 @@ public class Scene {
                 Objects.equals(this.decision, that.decision);
     }
 
-
+    public static List<Pair<String, String>> conversations(List<String> conversations) {
+        List<Pair<String, String>> list = new ArrayList<>();
+        for (int i = 0; i < conversations.size(); i++) {
+            list.add(i, Pair.of(String.valueOf(i), conversations.get(i)));
+        }
+        return list;
+    }
 }

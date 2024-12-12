@@ -21,6 +21,6 @@ public record SceneSelector(Condition condition,
 
 
     public boolean checkCondition(Player player) {
-        return true;
+        return this.condition.check(this.operator, this.unit, this.value);
     }
 }

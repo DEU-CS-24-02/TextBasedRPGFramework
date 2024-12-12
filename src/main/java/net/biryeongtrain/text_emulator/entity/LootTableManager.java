@@ -24,7 +24,7 @@ public class LootTableManager {
         return lootTables;
     }
 
-    public LootTableInstance getLootTable(Scene scene) {
+    public LootTableInstance getLootTable() {
         var random = GameManager.getInstance().getRandom();
         int weight = random.nextInt(totalWeight);
         for (LootTableInstance lootTable : lootTables) {

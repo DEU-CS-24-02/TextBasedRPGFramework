@@ -1,5 +1,7 @@
 package net.biryeongtrain.text_emulator.swing;
 
+import net.biryeongtrain.text_emulator.GameManager;
+import net.biryeongtrain.text_emulator.entity.Player;
 import net.biryeongtrain.text_emulator.utils.Util;
 
 import javax.swing.*;
@@ -31,6 +33,7 @@ public class SimpleTextRPG extends JFrame {
         textAreaPanel.setLocation((1280 - centerSize.width) / 2,0);
         c.add(textAreaPanel);
 
+
         // 플레이어 정보 패널 크기 설정
         JPanel PlayerPanel = new JPanel(new GridLayout(2,1,1,1));
         PlayerPanel.setSize(centerSize.width/2 - 1, centerSize.height);
@@ -56,8 +59,16 @@ public class SimpleTextRPG extends JFrame {
 
         // 창 크기 설정 및 표시
         setSize(1280, 720);
+        setResizable(false);
         setVisible(true);
         this.addWindowListener(new OnCloseEventHandler());
+        this.entityInfoPanel.UpdateData();
+
+        Timer timer = new Timer(1000, e -> {
+            this.playerInfoPanel.UpdateData();
+            this.sceneInfoPanel.UpdateData();
+        });
+        timer.start();
     }
 
 

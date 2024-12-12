@@ -2,6 +2,8 @@ package net.biryeongtrain.text_emulator.swing;
 
 import java.awt.*;
 import javax.swing.*;
+
+import net.biryeongtrain.text_emulator.GameManager;
 import net.biryeongtrain.text_emulator.entity.Player;
 import net.biryeongtrain.text_emulator.entity.PlayerInventory;
 
@@ -94,7 +96,8 @@ public class PlayerInfoPanel extends JPanel {
     }
 
     //플레이어 정보를 라벨에 업데이트하는 메소드
-    public void UpdateData(Player player) {
+    public void UpdateData() {
+        Player player = GameManager.getInstance().getPlayer();
         PlayerInventory playerInventory = player.getInventory();
         playerHealthDataLabel.setText(Math.round(player.getHealth()) + "");
         playerKarmaDataLabel.setText(playerInventory.getGold() + "");
