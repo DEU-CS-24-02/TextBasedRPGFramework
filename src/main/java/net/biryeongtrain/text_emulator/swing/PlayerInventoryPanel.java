@@ -46,7 +46,11 @@ public class PlayerInventoryPanel extends JPanel {
         public ItemUseButton(ItemStack stack) {
             JButton newButton = new JButton();
             newButton.setSize(320,50);
-            newButton.setText(stack.getItem().getName() + " " + stack.getCount() + "개");
+            int itemCount = stack.getCount();
+            newButton.setText(stack.getItem().getName());
+            if(itemCount > 1) {
+                newButton.setText(stack.getItem().getName() + " " + stack.getCount() + "개");
+            }
             newButton.addActionListener(e -> ItemUse(stack));
             ItemArea.add(newButton);
             setVisible(true);
