@@ -127,9 +127,11 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
 
     public void setCount(int i) {
         this.count = Math.min(this.getMaxCount(), i);
+        Player player = GameManager.getInstance().getPlayer();
 
         if (this.count <= 0) {
-            this.base = Items.AIR;
+            //this.base = Items.AIR;
+            player.getInventory().deleteStack(this);
         }
     }
 
@@ -285,8 +287,8 @@ public class ItemStack implements Serializable<ItemStack>, ComponentHolder {
         Player player = GameManager.getInstance().getPlayer();
         Float healAmount = this.get(ItemComponents.HEAL_AMOUNT);
         if (healAmount != null && healAmount > 0) { // healAmount가 있는 경우에만 체력 회복
+            player.removeItem(this.base); // 수량 감소
             player.heal(healAmount); // 플레이어 체력 회복
-            this.shrink(); // 아이템 사용 후 수량 감소
             return true;
         }
         return false;

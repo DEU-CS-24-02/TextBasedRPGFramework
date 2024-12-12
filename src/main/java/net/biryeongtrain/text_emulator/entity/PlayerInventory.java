@@ -105,6 +105,14 @@ public class PlayerInventory implements Inventory {
         return false;
     }
 
+    public boolean deleteStack(ItemStack stack) {
+        if(stacks.contains(stack)) {
+            stacks.remove(stack);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void setStack(int slot, ItemStack stack) {
         this.stacks.set(slot, stack);
